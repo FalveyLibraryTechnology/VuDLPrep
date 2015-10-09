@@ -1,4 +1,8 @@
 Rails.application.routes.draw do
+  get ':category/:job/:image/thumb', to: 'image#thumb', as: 'thumb', :constraints => { :image => /[^\/]+/ }
+  get ':category/:job/:image/medium', to: 'image#medium', as: 'medium', :constraints => { :image => /[^\/]+/ }
+  get ':category/:job/:image/large', to: 'image#large', as: 'large', :constraints => { :image => /[^\/]+/ }
+
   get ':category/:job/pagination', to: 'pagination#index', as: 'pagination'
 
   # The priority is based upon order of creation: first created -> highest priority.

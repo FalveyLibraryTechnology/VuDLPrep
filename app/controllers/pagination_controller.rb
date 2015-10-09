@@ -11,15 +11,6 @@ class PaginationController < ApplicationController
     end
   end
 
-  def getDirFromParams(params)
-    # Sanitize directory path components:
-    category = params[:category].gsub(/\W/, '')
-    job = params[:job].gsub(/\W/, '')
-
-    # Build full path:
-    "/usr/local/holding/#{category}/#{job}"
-  end
-
   def getTiffsFromDir(dir)
     Dir.glob("#{dir}/*.TIF")
   end
