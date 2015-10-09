@@ -2,17 +2,17 @@ require 'json'
 
 class PaginationController < ApplicationController
   def index
-    dir = getDirFromParams(params)
+    dir = jobPath(params)
     if !Dir.exist?(dir)
       render status: 404, json: { error: "Job not found" }
     else
-      orderDoc = getOrderDocFromDir(dir)
-      render json: orderDoc
+      orderDocContents = orderDoc(dir)
+      render json: orderDocContents
     end
   end
 
   def update
-    dir = getDirFromParams(params)
+    dir = jobPath(params)
     if !Dir.exist?(dir)
       render status: 404, json: { error: "Job not found" }
     else
@@ -20,7 +20,7 @@ class PaginationController < ApplicationController
       if !validateJson(dir, newJson)
         render status: 500, json: { error: "Invalid JSON document" }
       else
-        file = getOrderDocFilenameFromDir(dir)
+        file = orderDocPath(dir)
         writeJsonToFile(file, { order: newJson })
         render json: { status: 'ok' }
       end
@@ -29,7 +29,7 @@ class PaginationController < ApplicationController
 
   def validateJson(dir, newJson)
     if newJson
-      oldTiffs = getTiffsFromDir(dir)
+      oldTiffs = tiffs(dir)
       newTiffs = newJson.map { |entry| entry[:filename] }
       diff = oldTiffs - newTiffs
       if (diff.empty? && oldTiffs.length == newTiffs.length)
@@ -38,28 +38,28 @@ class PaginationController < ApplicationController
     end
   end
 
-  def getTiffsFromDir(dir)
+  def tiffs(dir)
     Dir.glob("#{dir}/*.TIF").map { |tiff| File.basename(tiff) }
   end
 
-  def generateOrderDocForDir(dir, file)
-    tiffs = []
-    getTiffsFromDir(dir).each do |tiff|
+  def generateOrderDoc(dir, file)
+    order = []
+    tiffs(dir).each do |tiff|
       line = { filename: tiff, label: nil }
-      tiffs.push line
+      order.push line
     end
-    data = { order: tiffs }
+    data = { order: order }
     writeJsonToFile(file, data)
   end
 
-  def getOrderDocFilenameFromDir(dir)
+  def orderDocPath(dir)
     "#{dir}/order.json"
   end
 
-  def getOrderDocFromDir(dir)
-    file = getOrderDocFilenameFromDir(dir)
+  def orderDoc(dir)
+    file = orderDocPath(dir)
     if !File.exist?(file)
-      generateOrderDocForDir(dir, file)
+      generateOrderDoc(dir, file)
     end
     File.open(file) do |f|
       f.read

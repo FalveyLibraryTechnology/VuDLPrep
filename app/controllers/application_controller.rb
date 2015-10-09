@@ -3,16 +3,16 @@ class ApplicationController < ActionController::Base
   # For APIs, you may want to use :null_session instead.
   #protect_from_forgery with: :exception
 
-  def holdingDir
+  def holdingPath
     "/usr/local/holding"
   end
 
-  def getDirFromParams(params)
+  def jobPath(params)
     # Sanitize directory path components:
     category = params[:category].gsub(/\W/, '')
     job = params[:job].gsub(/\W/, '')
 
     # Build full path:
-    "#{holdingDir}/#{category}/#{job}"
+    "#{holdingPath}/#{category}/#{job}"
   end
 end

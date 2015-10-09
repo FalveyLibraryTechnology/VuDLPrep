@@ -17,8 +17,8 @@ class ImageController < ApplicationController
   end
 
   def handleImage(params, size, constraint)
-    tiff = getTiffFromParams(params)
-    deriv = getDerivativeFromParams(params, size)
+    tiff = tiffPath(params)
+    deriv = derivativePath(params, size)
     if !File.exist?(deriv)
       path = File.dirname(deriv)
       FileUtils.mkdir_p path unless File.exist?(path)
@@ -29,15 +29,15 @@ class ImageController < ApplicationController
     send_file deriv, type: "image/jpeg", disposition: "inline"
   end
 
-  def getTiffFromParams(params)
-    dir = getDirFromParams(params)
+  def tiffPath(params)
+    dir = jobPath(params)
     filename = params[:image].gsub(/[^\w.]/, '')
     "#{dir}/#{filename}"
   end
 
-  def getDerivativeFromParams(params, size)
-    dir = getDirFromParams(params)
-    filename = File.basename(getTiffFromParams(params), '.TIF')
+  def derivativePath(params, size)
+    dir = jobPath(params)
+    filename = File.basename(tiffPath(params), '.TIF')
     "#{dir}/#{filename}/#{size}/#{filename}.jpg"
   end
 end
