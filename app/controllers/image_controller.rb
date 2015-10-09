@@ -19,6 +19,10 @@ class ImageController < ApplicationController
   def handleImage(params, size, constraint)
     tiff = tiffPath(params)
     deriv = derivativePath(params, size)
+    if !File.exist?(tiff)
+      render status: 404, json: { status: 'image missing' }
+      return
+    end
     if !File.exist?(deriv)
       path = File.dirname(deriv)
       FileUtils.mkdir_p path unless File.exist?(path)
