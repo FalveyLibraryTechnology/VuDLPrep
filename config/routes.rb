@@ -4,6 +4,7 @@ Rails.application.routes.draw do
   get '/:category/:job/:image/large', to: 'image#large', as: 'large', :constraints => { :image => /[^\/]+/ }
 
   get '/:category/:job/pagination', to: 'pagination#index', as: 'pagination'
+  put '/:category/:job/pagination', to: 'pagination#update'
 
   get '/', to: 'job#index', as: 'job'
 
