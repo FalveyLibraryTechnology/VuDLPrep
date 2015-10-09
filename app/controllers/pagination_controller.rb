@@ -39,7 +39,7 @@ class PaginationController < ApplicationController
   end
 
   def tiffs(dir)
-    Dir.glob("#{dir}/*.TIF").map { |tiff| File.basename(tiff) }
+    Dir.glob("#{dir}/*.TIF").sort.map { |tiff| File.basename(tiff) }
   end
 
   def generateOrderDoc(dir, file)
