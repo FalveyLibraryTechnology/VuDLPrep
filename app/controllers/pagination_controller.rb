@@ -18,7 +18,7 @@ class PaginationController < ApplicationController
     else
       newJson = params[:order]
       if !validateJson(dir, newJson)
-        render status: 500, json: { error: "Invalid JSON document" }
+        render status: 400, json: { error: "Invalid JSON document" }
       else
         file = orderDocPath(dir)
         writeJsonToFile(file, { order: newJson })
