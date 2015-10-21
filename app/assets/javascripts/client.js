@@ -118,6 +118,8 @@ var VuDLPrep = {
     },
 
     selectPage: function(p) {
+        $('.thumbnail').removeClass('selected');
+        this.thumbnails[p].addClass('selected');
         this.currentPage = p;
         this.loadPreview(
             this.currentCategory, this.currentJob, this.currentPageOrder[p]['filename']

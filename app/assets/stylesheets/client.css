@@ -1,0 +1,12 @@
+.thumbnail {
+    float: left;
+    padding: 5px;
+    margin: 5px;
+    border: 1px solid black;
+}
+.thumbnail.selected {
+    border: 1px solid red;
+}
+.preview {
+    clear: left;
+}
