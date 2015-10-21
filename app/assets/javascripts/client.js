@@ -46,6 +46,11 @@ var VuDLPrep = {
             this.pageSuffixes, function (t) { that.setPageSuffix(t); }
         );
         controls.append(suffixGroup);
+        var pageConversion = $('<div class="toggles"></div>');
+        var toggleBrackets = $('<button>Toggle []</button>');
+        toggleBrackets.click(function() { that.toggleBrackets(); });
+        pageConversion.append(toggleBrackets);
+        controls.append(pageConversion);
         var pageNavigation = $('<div class="navigation"></div>');
         var pagePrev = $('<button>Prev</button>');
         pagePrev.click(function() { that.switchPage(-1); })
@@ -184,9 +189,14 @@ var VuDLPrep = {
 
     getMagicPageLabel: function(p) {
         if (p > 0) {
-            var priorLabel = this.getPageLabel(p - 1);
-            if (parseInt(priorLabel) > 0) {
-                return parseInt(priorLabel) + 1;
+            var priorLabel = this.parsePageLabel(this.getPageLabel(p - 1));
+            if (priorLabel['suffix'] == ', recto') {
+                priorLabel['suffix'] = ', verso';
+                return this.assemblePageLabel(priorLabel);
+            }
+            if (parseInt(priorLabel['label']) > 0) {
+                priorLabel['label'] = parseInt(priorLabel['label']) + 1;
+                return this.assemblePageLabel(priorLabel);
             }
         }
         return 1;
@@ -199,10 +209,16 @@ var VuDLPrep = {
     },
 
     assemblePageLabel: function (label) {
-        return label['prefix'] + label['label'] + label['suffix'];
+        var text = label['prefix'] + label['label'] + label['suffix'];
+        return label['brackets'] ? '[' + text + ']' : text;
     },
 
     parsePageLabel: function(text) {
+        var brackets = false;
+        if (text.substring(0, 1) == '[' && text.substring(text.length - 1, text.length) == ']') {
+            text = text.substring(1, text.length - 1);
+            brackets = true;
+        }
         var prefix = '';
         for (var i = 0; i < this.pagePrefixes.length; i++) {
             var currentPrefix = this.pagePrefixes[i];
@@ -225,7 +241,8 @@ var VuDLPrep = {
         return {
             prefix: prefix,
             label: label,
-            suffix: suffix
+            suffix: suffix,
+            brackets: brackets
         };
     },
 
@@ -233,18 +250,28 @@ var VuDLPrep = {
         var label = this.parsePageLabel(this.pageInput.val());
         label['prefix'] = text;
         this.pageInput.val(this.assemblePageLabel(label));
+        this.updateCurrentPageLabel();
     },
 
     setPageLabel: function(text) {
         var label = this.parsePageLabel(this.pageInput.val());
         label['label'] = text;
         this.pageInput.val(this.assemblePageLabel(label));
+        this.updateCurrentPageLabel();
     },
 
     setPageSuffix: function(text) {
         var label = this.parsePageLabel(this.pageInput.val());
         label['suffix'] = text;
         this.pageInput.val(this.assemblePageLabel(label));
+        this.updateCurrentPageLabel();
+    },
+
+    toggleBrackets: function() {
+        var label = this.parsePageLabel(this.pageInput.val());
+        label['brackets'] = !label['brackets'];
+        this.pageInput.val(this.assemblePageLabel(label));
+        this.updateCurrentPageLabel();
     },
 
     selectPage: function(p) {

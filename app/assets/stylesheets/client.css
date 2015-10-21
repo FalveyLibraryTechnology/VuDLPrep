@@ -9,4 +9,9 @@
 }
 .preview {
     clear: left;
+    float: left;
+}
+
+.controls {
+    float: left;
 }
