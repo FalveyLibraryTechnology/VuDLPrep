@@ -248,7 +248,7 @@ var VuDLPrep = {
 
     setPagePrefix: function(text) {
         var label = this.parsePageLabel(this.pageInput.val());
-        label['prefix'] = text;
+        label['prefix'] = (label['prefix'] == text) ? '' : text;
         this.pageInput.val(this.assemblePageLabel(label));
         this.updateCurrentPageLabel();
     },
@@ -262,7 +262,7 @@ var VuDLPrep = {
 
     setPageSuffix: function(text) {
         var label = this.parsePageLabel(this.pageInput.val());
-        label['suffix'] = text;
+        label['suffix'] = (label['suffix'] == text) ? '' : text;
         this.pageInput.val(this.assemblePageLabel(label));
         this.updateCurrentPageLabel();
     },
