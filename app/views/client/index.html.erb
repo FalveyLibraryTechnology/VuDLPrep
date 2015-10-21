@@ -1,2 +1,5 @@
-<h1>Client#index</h1>
-<p>Find me in app/views/client/index.html.erb</p>
+<h1>VuDL Prep Tool</h1>
+<div id="vudlprep">
+</div>
+
+<script>$(document).ready(function() { VuDLPrep.init("<%= url_for controller: 'job', action: 'index' %>"); });</script>
