@@ -30,9 +30,15 @@ var VuDLPrep = {
         var that = this;
         this.pageInput.on('change', function () { that.updateCurrentPageLabel(); });
         controls.append(this.pageInput);
-        this.pageSave = $('<button>Save</button>');
-        this.pageSave.click(function() { that.savePagination(); });
-        controls.append(this.pageSave);
+        var pagePrev = $('<button>Prev</button>');
+        pagePrev.click(function() { that.switchPage(-1); })
+        controls.append(pagePrev);
+        var pageNext = $('<button>Next</button>');
+        pageNext.click(function() { that.switchPage(1); })
+        controls.append(pageNext);
+        var pageSave = $('<button>Save</button>');
+        pageSave.click(function() { that.savePagination(); });
+        controls.append(pageSave);
         return controls;
     },
 
@@ -135,6 +141,7 @@ var VuDLPrep = {
     },
 
     savePagination: function() {
+        this.updateCurrentPageLabel();
         var that = this;
         $.ajax({
             type: 'PUT',
@@ -146,14 +153,38 @@ var VuDLPrep = {
         });
     },
 
+    getMagicPageLabel: function(p) {
+        if (p > 0) {
+            var priorLabel = this.getPageLabel(p - 1);
+            if (parseInt(priorLabel) > 0) {
+                return parseInt(priorLabel) + 1;
+            }
+        }
+        return 1;
+    },
+
+    getPageLabel: function(p) {
+        var label = this.currentPageOrder[p]['label'];
+        return (null === label)
+            ? this.getMagicPageLabel(p) : label;
+    },
+
     selectPage: function(p) {
         $('.thumbnail').removeClass('selected');
-        this.pageInput.val(this.currentPageOrder[p]['label']);
+        this.pageInput.val(this.getPageLabel(p));
         this.thumbnails[p].addClass('selected');
         this.currentPage = p;
         this.loadPreview(
             this.currentCategory, this.currentJob, this.currentPageOrder[p]['filename']
         );
+    },
+
+    switchPage: function(delta) {
+        var newPage = this.currentPage + delta;
+        this.updateCurrentPageLabel();
+        if (typeof this.currentPageOrder[newPage] !== 'undefined') {
+            this.selectPage(newPage);
+        }
     },
 
     updateCurrentPageLabel: function() {
