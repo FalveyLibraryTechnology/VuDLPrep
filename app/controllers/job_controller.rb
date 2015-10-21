@@ -1,7 +1,7 @@
 class JobController < ApplicationController
   def index
     data = []
-    Dir.glob("#{holdingPath}/*").each do |dir|
+    Dir.glob("#{holdingPath}/*").sort.each do |dir|
       if Dir.exist?(dir)
         current = { category: File.basename(dir), jobs: jobs(dir).map { |job| File.basename(job) } }
         data.push(current)
@@ -11,7 +11,7 @@ class JobController < ApplicationController
   end
 
   def jobs(dir)
-    Dir.glob("#{dir}/*").keep_if do |job|
+    Dir.glob("#{dir}/*").sort.keep_if do |job|
       Dir.exist?(job)
     end
   end
