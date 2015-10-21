@@ -1,13 +1,15 @@
 Rails.application.routes.draw do
-  get '/:category/:job/:image/thumb', to: 'image#thumb', as: 'thumb', :constraints => { :image => /[^\/]+/ }
-  get '/:category/:job/:image/medium', to: 'image#medium', as: 'medium', :constraints => { :image => /[^\/]+/ }
-  get '/:category/:job/:image/large', to: 'image#large', as: 'large', :constraints => { :image => /[^\/]+/ }
+  get 'api/:category/:job/:image/thumb', to: 'image#thumb', as: 'thumb', :constraints => { :image => /[^\/]+/ }
+  get 'api/:category/:job/:image/medium', to: 'image#medium', as: 'medium', :constraints => { :image => /[^\/]+/ }
+  get 'api/:category/:job/:image/large', to: 'image#large', as: 'large', :constraints => { :image => /[^\/]+/ }
 
-  get '/:category/:job/pagination', to: 'pagination#index', as: 'pagination'
-  put '/:category/:job/pagination', to: 'pagination#update'
+  get 'api/:category/:job/pagination', to: 'pagination#index', as: 'pagination'
+  put 'api/:category/:job/pagination', to: 'pagination#update'
 
-  get '/', to: 'job#index', as: 'job'
+  get 'api', to: 'job#index', as: 'api'
 
+  get '/', to: 'client#index', as: 'home'
+  
   # The priority is based upon order of creation: first created -> highest priority.
   # See how all your routes lay out with "rake routes".
 
