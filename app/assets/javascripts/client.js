@@ -18,10 +18,22 @@ var VuDLPrep = {
         this.paginator.append(this.paginatorList);
         this.paginatorPreview = $('<div class="preview"></div>');
         this.paginator.append(this.paginatorPreview);
-        this.paginatorControls = $('<div class="controls"></div>');
+        this.paginatorControls = this.buildPaginatorControls();
         this.paginator.append(this.paginatorControls);
         this.paginator.hide();
         this.container.append(this.paginator);
+    },
+
+    buildPaginatorControls: function() {
+        var controls = $('<div class="controls"></div>');
+        this.pageInput = $('<input type="text" id="page" />');
+        var that = this;
+        this.pageInput.on('change', function () { that.updateCurrentPageLabel(); });
+        controls.append(this.pageInput);
+        this.pageSave = $('<button>Save</button>');
+        this.pageSave.click(function() { that.savePagination(); });
+        controls.append(this.pageSave);
+        return controls;
     },
 
     fetchJobs: function(target) {
@@ -64,6 +76,11 @@ var VuDLPrep = {
         return function () {
             return that.selectPage(p);
         }
+    },
+
+    activateJobSelector: function() {
+        this.jobSelector.show();
+        this.paginator.hide();
     },
 
     selectJob: function(category, job) {
@@ -117,12 +134,34 @@ var VuDLPrep = {
         this.paginatorPreview.append(currentImage);
     },
 
+    savePagination: function() {
+        var that = this;
+        $.ajax({
+            type: 'PUT',
+            url: this.getJobUrl(this.currentCategory, this.currentJob, '/pagination'),
+            contentType: 'application/json',
+            data: JSON.stringify({ order: this.currentPageOrder }),
+            success: function() { alert('Success!'); that.activateJobSelector(); },
+            error: function() { alert('Unable to save!'); }
+        });
+    },
+
     selectPage: function(p) {
         $('.thumbnail').removeClass('selected');
+        this.pageInput.val(this.currentPageOrder[p]['label']);
         this.thumbnails[p].addClass('selected');
         this.currentPage = p;
         this.loadPreview(
             this.currentCategory, this.currentJob, this.currentPageOrder[p]['filename']
         );
+    },
+
+    updateCurrentPageLabel: function() {
+        var label = this.pageInput.val();
+        if (label.length == 0) {
+            label = null;
+        }
+        this.currentPageOrder[this.currentPage]['label'] = label;
+        this.thumbnails[this.currentPage].find('.label').text(label);
     }
 };
