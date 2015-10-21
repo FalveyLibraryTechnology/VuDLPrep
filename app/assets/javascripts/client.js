@@ -2,6 +2,9 @@ var VuDLPrep = {
     init: function (url, container) {
         this.url = url;
         this.container = container;
+        this.pagePrefixes = ['Front ', 'Rear '];
+        this.pageLabels = ['cover', 'fly leaf', 'pastedown', 'Frontispiece', 'Plate'];
+        this.pageSuffixes = [', recto', ', verso'];
         this.buildJobSelector();
         this.buildPaginator();
     },
@@ -30,16 +33,42 @@ var VuDLPrep = {
         var that = this;
         this.pageInput.on('change', function () { that.updateCurrentPageLabel(); });
         controls.append(this.pageInput);
+
+        var prefixGroup = this.buildPaginatorControlGroup(
+            this.pagePrefixes, function (t) { that.setPagePrefix(t); }
+        );
+        controls.append(prefixGroup);
+        var labelGroup = this.buildPaginatorControlGroup(
+            this.pageLabels, function (t) { that.setPageLabel(t); }
+        );
+        controls.append(labelGroup);
+        var suffixGroup = this.buildPaginatorControlGroup(
+            this.pageSuffixes, function (t) { that.setPageSuffix(t); }
+        );
+        controls.append(suffixGroup);
+        var pageNavigation = $('<div class="navigation"></div>');
         var pagePrev = $('<button>Prev</button>');
         pagePrev.click(function() { that.switchPage(-1); })
-        controls.append(pagePrev);
+        pageNavigation.append(pagePrev);
         var pageNext = $('<button>Next</button>');
         pageNext.click(function() { that.switchPage(1); })
-        controls.append(pageNext);
+        pageNavigation.append(pageNext);
+        controls.append(pageNavigation);
+
         var pageSave = $('<button>Save</button>');
         pageSave.click(function() { that.savePagination(); });
         controls.append(pageSave);
         return controls;
+    },
+
+    buildPaginatorControlGroup: function(options, callback) {
+        var group = $('<div class="controlGroup"></div>');
+        for (var i = 0; i < options.length; i++) {
+            var current = $('<button />').text(options[i]);
+            current.click(function () { callback($(this).text()) });
+            group.append(current);
+        }
+        return group;
     },
 
     fetchJobs: function(target) {
@@ -167,6 +196,55 @@ var VuDLPrep = {
         var label = this.currentPageOrder[p]['label'];
         return (null === label)
             ? this.getMagicPageLabel(p) : label;
+    },
+
+    assemblePageLabel: function (label) {
+        return label['prefix'] + label['label'] + label['suffix'];
+    },
+
+    parsePageLabel: function(text) {
+        var prefix = '';
+        for (var i = 0; i < this.pagePrefixes.length; i++) {
+            var currentPrefix = this.pagePrefixes[i];
+            if (text.substring(0, currentPrefix.length) == currentPrefix) {
+                prefix = currentPrefix;
+                text = text.substring(currentPrefix.length);
+                break;
+            }
+        }
+        var suffix = '';
+        for (var i = 0; i < this.pageSuffixes.length; i++) {
+            var currentSuffix = this.pageSuffixes[i];
+            if (text.substring(text.length - currentSuffix.length) == currentSuffix) {
+                suffix = currentSuffix;
+                text = text.substring(0, text.length - currentSuffix.length);
+                break;
+            }
+        }
+        var label = text;
+        return {
+            prefix: prefix,
+            label: label,
+            suffix: suffix
+        };
+    },
+
+    setPagePrefix: function(text) {
+        var label = this.parsePageLabel(this.pageInput.val());
+        label['prefix'] = text;
+        this.pageInput.val(this.assemblePageLabel(label));
+    },
+
+    setPageLabel: function(text) {
+        var label = this.parsePageLabel(this.pageInput.val());
+        label['label'] = text;
+        this.pageInput.val(this.assemblePageLabel(label));
+    },
+
+    setPageSuffix: function(text) {
+        var label = this.parsePageLabel(this.pageInput.val());
+        label['suffix'] = text;
+        this.pageInput.val(this.assemblePageLabel(label));
     },
 
     selectPage: function(p) {
