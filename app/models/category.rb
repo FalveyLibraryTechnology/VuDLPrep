@@ -12,11 +12,11 @@ class Category
     end
   end
 
-  def json
+  def raw
     {
       category: name,
       jobs: jobs.map do |job|
-        job.json
+        job.raw
       end
     }
   end

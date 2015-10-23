@@ -9,9 +9,9 @@ class CategoryCollection
     end
   end
 
-  def json
+  def raw
     categories.map do |category|
-      category.json
+      category.raw
     end
   end
 end

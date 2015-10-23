@@ -6,7 +6,11 @@ class Job
     @name = File.basename(dir)
   end
 
-  def json
+  def raw
     name
+  end
+
+  def metadata
+    @metadata ||= JobMetadata.new self
   end
 end
