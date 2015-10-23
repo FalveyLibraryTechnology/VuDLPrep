@@ -95,7 +95,12 @@ var VuDLPrep = {
                         currentLink.click(
                             that.getJobSelector(currentCategory, currentJob)
                         );
+                        var currentStatus = $("<span> checking...</span>");
+                        that.updateJobDerivativeStatus(
+                            currentCategory, currentJob, currentStatus
+                        );
                         currentItem.append(currentLink);
+                        currentItem.append(currentStatus);
                         currentList.append(currentItem);
                     }
                     target.append(currentElement);
@@ -109,6 +114,45 @@ var VuDLPrep = {
         return function () {
             return that.selectJob(category, job);
         }
+    },
+
+    updateJobDerivativeStatus: function(category, job, element) {
+        var that = this;
+        var derivUrl = this.getJobUrl(category, job, '/derivatives');
+        jQuery.getJSON(derivUrl, null, function (data) {
+            element.empty();
+            var addLinks, status;
+            if (data['expected'] === data['processed']) {
+                status = " [ready]";
+                addLinks = false;
+            } else {
+                status = " [derivatives: " + data['processed'] + "/" + data['expected'] + "] ";
+                addLinks = true;
+            }
+            element.empty().text(status);
+            if (addLinks) {
+                var refresh = $('<a href="#">[refresh]</a>');
+                refresh.click(function() {
+                    element.empty().text(' checking...');
+                    that.updateJobDerivativeStatus(category, job, element);
+                });
+                var build = $('<a href="#">[build]</a>');
+                build.click(function() {
+                    element.empty().text(' triggering...');
+                    $.ajax({
+                        type: 'PUT',
+                        url: derivUrl,
+                        contentType: 'application/json',
+                        data: '{}',
+                        success: function() { that.updateJobDerivativeStatus(category, job, element); },
+                        error: function() { element.empty().text(' failed!'); }
+                    });
+                    that.updateJobDerivativeStatus(category, job, element);
+                });
+                element.append(refresh);
+                element.append(build);
+            }
+        });
     },
 
     getPageSelector: function(p) {
