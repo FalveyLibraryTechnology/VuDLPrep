@@ -1,47 +1,31 @@
 require 'fileutils'
-require 'rmagick'
 
 class ImageController < ApplicationController
-  include Magick
-
   def thumb
-    handleImage(params, 'THUMBNAIL', 120)
+    handle_image(params, 'THUMBNAIL', 120)
   end
 
   def medium
-    handleImage(params, 'MEDIUM', 640)
+    handle_image(params, 'MEDIUM', 640)
   end
 
   def large
-    handleImage(params, 'LARGE', 3000)
+    handle_image(params, 'LARGE', 3000)
   end
 
-  def handleImage(params, size, constraint)
-    tiff = tiff_path(params)
-    deriv = derivative_path(params, size)
-    if !File.exist?(tiff)
+  def handle_image(params, size, constraint)
+    orig = orig_image_path(params)
+    if !File.exist?(orig)
       render status: 404, json: { status: 'image missing' }
       return
     end
-    if !File.exist?(deriv)
-      path = File.dirname(deriv)
-      FileUtils.mkdir_p path unless File.exist?(path)
-      image = ImageList.new(tiff)
-      image.resize_to_fit!(constraint)
-      image.write(deriv)
-    end
+    deriv = Image.new(orig).derivative(size, constraint)
     send_file deriv, type: "image/jpeg", disposition: "inline"
   end
 
-  def tiff_path(params)
+  def orig_image_path(params)
     dir = job_path(params)
     filename = params[:image].gsub(/[^\w.]/, '')
     "#{dir}/#{filename}"
-  end
-
-  def derivative_path(params, size)
-    dir = job_path(params)
-    filename = File.basename(tiff_path(params), '.TIF')
-    "#{dir}/#{filename}/#{size}/#{filename}.jpg"
   end
 end
