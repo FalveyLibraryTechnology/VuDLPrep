@@ -2,9 +2,10 @@ class PageOrder
   attr_reader :pages
 
   def self.from_job(job)
-    self.new Dir.glob("#{job.dir}/*.TIF").sort.map do |tiff|
-      Page.new File.basename(tiff), nil
+    pages = Dir.glob("#{job.dir}/*.TIF").sort.map do |tiff|
+      Page.new(File.basename(tiff), nil)
     end
+    self.new pages
   end
 
   def self.from_raw(raw)
