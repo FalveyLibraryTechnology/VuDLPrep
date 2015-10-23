@@ -1,5 +1,3 @@
-require 'json'
-
 class MetadataController < ApplicationController
   def index
     dir = job_path(params)

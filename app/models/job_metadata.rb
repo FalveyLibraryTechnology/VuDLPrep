@@ -1,3 +1,5 @@
+require 'json'
+
 class JobMetadata
   def initialize(job)
     @job = job
