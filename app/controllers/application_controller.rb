@@ -7,12 +7,19 @@ class ApplicationController < ActionController::Base
     "/usr/local/holding"
   end
 
-  def jobPath(params)
-    # Sanitize directory path components:
+  def categoryPath(params)
+    # Sanitize directory path component:
     category = params[:category].gsub(/\W/, '')
+
+    # Build full path:
+    "#{holdingPath}/#{category}"
+  end
+
+  def jobPath(params)
+    # Sanitize directory path component:
     job = params[:job].gsub(/\W/, '')
 
     # Build full path:
-    "#{holdingPath}/#{category}/#{job}"
+    "#{categoryPath(params)}/#{job}"
   end
 end

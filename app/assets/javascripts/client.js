@@ -147,7 +147,7 @@ var VuDLPrep = {
     loadPageList: function(category, job, target) {
         var that = this;
         target.empty();
-        jQuery.getJSON(this.getJobUrl(category, job, '/pagination'), null, function (data, status) {
+        jQuery.getJSON(this.getJobUrl(category, job, ''), null, function (data, status) {
             that.currentPageOrder = data['order'];
             that.thumbnails = [];
             for (var i = 0; i < data['order'].length; i++) {
@@ -179,7 +179,7 @@ var VuDLPrep = {
         var that = this;
         $.ajax({
             type: 'PUT',
-            url: this.getJobUrl(this.currentCategory, this.currentJob, '/pagination'),
+            url: this.getJobUrl(this.currentCategory, this.currentJob, ''),
             contentType: 'application/json',
             data: JSON.stringify({ order: this.currentPageOrder }),
             success: function() { alert('Success!'); that.activateJobSelector(); },

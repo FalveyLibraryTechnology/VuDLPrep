@@ -3,10 +3,12 @@ Rails.application.routes.draw do
   get 'api/:category/:job/:image/medium', to: 'image#medium', as: 'medium', :constraints => { :image => /[^\/]+/ }
   get 'api/:category/:job/:image/large', to: 'image#large', as: 'large', :constraints => { :image => /[^\/]+/ }
 
-  get 'api/:category/:job/pagination', to: 'pagination#index', as: 'pagination'
-  put 'api/:category/:job/pagination', to: 'pagination#update'
+  get 'api/:category/:job', to: 'metadata#index'
+  put 'api/:category/:job', to: 'metadata#update'
 
-  get 'api', to: 'job#index', as: 'api'
+  get 'api/:category', to: 'list#category'
+
+  get 'api', to: 'list#index', as: 'api'
 
   get '/', to: 'client#index', as: 'home'
   

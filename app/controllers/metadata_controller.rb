@@ -1,6 +1,6 @@
 require 'json'
 
-class PaginationController < ApplicationController
+class MetadataController < ApplicationController
   def index
     dir = jobPath(params)
     if !Dir.exist?(dir)
