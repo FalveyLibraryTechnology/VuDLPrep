@@ -4,6 +4,7 @@ Rails.application.routes.draw do
   get 'api/:category/:job/:image/large', to: 'image#large', as: 'large', :constraints => { :image => /[^\/]+/ }
 
   get 'api/:category/:job/derivatives', to: 'metadata#derivatives'
+  put 'api/:category/:job/derivatives', to: 'metadata#make_derivatives'
 
   get 'api/:category/:job', to: 'metadata#index'
   put 'api/:category/:job', to: 'metadata#update'

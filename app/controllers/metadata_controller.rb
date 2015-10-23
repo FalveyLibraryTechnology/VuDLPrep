@@ -19,6 +19,20 @@ class MetadataController < ApplicationController
     end
   end
 
+  def make_derivatives
+    dir = job_path(params)
+    if !Dir.exist?(dir)
+      render status: 404, json: { error: "Job not found" }
+    else
+      job = Job.new dir
+      status = job.metadata.derivative_status
+      if (status[:expected] > status[:processed])
+        Resque.enqueue(DerivativeGenerator, dir)
+      end
+      render json: status
+    end
+  end
+
   def update
     dir = job_path(params)
     if !Dir.exist?(dir)
