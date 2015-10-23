@@ -17,8 +17,8 @@ class ImageController < ApplicationController
   end
 
   def handleImage(params, size, constraint)
-    tiff = tiffPath(params)
-    deriv = derivativePath(params, size)
+    tiff = tiff_path(params)
+    deriv = derivative_path(params, size)
     if !File.exist?(tiff)
       render status: 404, json: { status: 'image missing' }
       return
@@ -33,15 +33,15 @@ class ImageController < ApplicationController
     send_file deriv, type: "image/jpeg", disposition: "inline"
   end
 
-  def tiffPath(params)
-    dir = jobPath(params)
+  def tiff_path(params)
+    dir = job_path(params)
     filename = params[:image].gsub(/[^\w.]/, '')
     "#{dir}/#{filename}"
   end
 
-  def derivativePath(params, size)
-    dir = jobPath(params)
-    filename = File.basename(tiffPath(params), '.TIF')
+  def derivative_path(params, size)
+    dir = job_path(params)
+    filename = File.basename(tiff_path(params), '.TIF')
     "#{dir}/#{filename}/#{size}/#{filename}.jpg"
   end
 end

@@ -2,7 +2,7 @@ require 'json'
 
 class MetadataController < ApplicationController
   def index
-    dir = jobPath(params)
+    dir = job_path(params)
     if !Dir.exist?(dir)
       render status: 404, json: { error: "Job not found" }
     else
@@ -12,7 +12,7 @@ class MetadataController < ApplicationController
   end
 
   def update
-    dir = jobPath(params)
+    dir = job_path(params)
     if !Dir.exist?(dir)
       render status: 404, json: { error: "Job not found" }
     else
