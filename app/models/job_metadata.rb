@@ -22,6 +22,20 @@ class JobMetadata
     @order = PageOrder.from_raw(data["order"])
   end
 
+  def derivative_status
+    status = { expected: 0, processed: 0 }
+    order.pages.each do |page|
+      image = Image.new("#{@job.dir}/#{page.filename}")
+      image.sizes.keys.each do |key|
+        status[:expected] += 1
+        if File.exist? image.derivative_path(key)
+          status[:processed] += 1
+        end
+      end
+    end
+    status
+  end
+
   def order
     @order ||= PageOrder.from_job(@job)
   end

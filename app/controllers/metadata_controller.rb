@@ -9,6 +9,16 @@ class MetadataController < ApplicationController
     end
   end
 
+  def derivatives
+    dir = job_path(params)
+    if !Dir.exist?(dir)
+      render status: 404, json: { error: "Job not found" }
+    else
+      job = Job.new dir
+      render json: job.metadata.derivative_status
+    end
+  end
+
   def update
     dir = job_path(params)
     if !Dir.exist?(dir)
