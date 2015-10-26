@@ -4,7 +4,7 @@ var VuDLPrep = {
         this.zoom = false;
         this.container = container;
         this.pagePrefixes = ['Front ', 'Rear '];
-        this.pageLabels = ['cover', 'fly leaf', 'pastedown', 'Frontispiece', 'Plate'];
+        this.pageLabels = ['Blank', 'cover', 'fly leaf', 'pastedown', 'Frontispiece', 'Plate'];
         this.pageSuffixes = [', recto', ', verso'];
         this.buildJobSelector();
         this.buildPaginator();
