@@ -10,6 +10,8 @@
 .preview, #zoomy {
     clear: left;
     float: left;
+    min-width: 800px;
+    text-align: center;
 }
 
 .controls {
