@@ -254,9 +254,10 @@ var VuDLPrep = {
     },
 
     getMagicPageLabel: function(p) {
-        if (p > 0) {
+        var skipRectoCheck = false;
+        while (p > 0) {
             var priorLabel = this.parsePageLabel(this.getPageLabel(p - 1));
-            if (priorLabel['suffix'] == ', recto') {
+            if (priorLabel['suffix'] == ', recto' && !skipRectoCheck) {
                 priorLabel['suffix'] = ', verso';
                 return this.assemblePageLabel(priorLabel);
             }
@@ -278,6 +279,13 @@ var VuDLPrep = {
             } catch (e) {
                 // Exception thrown! Guess it's not going to work!
             }
+
+            // If we couldn't determine a label based on the previous page,
+            // let's go back deeper... however, when doing this deeper search,
+            // we don't want to repeat the recto/verso check since that will
+            // cause bad results.
+            p--;
+            skipRectoCheck = true;
         }
         return 1;
     },
@@ -295,6 +303,7 @@ var VuDLPrep = {
 
     parsePageLabel: function(text) {
         var brackets = false;
+        text = new String(text);
         if (text.substring(0, 1) == '[' && text.substring(text.length - 1, text.length) == ']') {
             text = text.substring(1, text.length - 1);
             brackets = true;
@@ -324,6 +333,16 @@ var VuDLPrep = {
             suffix: suffix,
             brackets: brackets
         };
+    },
+
+    recalculateMagicLabels: function() {
+        for (var i = 0; i < this.currentPageOrder.length; i++) {
+            if (null === this.currentPageOrder[i]['label']) {
+                var label = $('<i></i>');
+                label.text(this.getMagicPageLabel(i))
+                this.thumbnails[i].find('.label').empty().append(label);
+            }
+        }
     },
 
     setPagePrefix: function(text) {
@@ -388,6 +407,7 @@ var VuDLPrep = {
         this.loadPreview(
             this.currentCategory, this.currentJob, this.currentPageOrder[p]['filename']
         );
+        this.recalculateMagicLabels();
     },
 
     switchPage: function(delta) {
@@ -421,6 +441,7 @@ var VuDLPrep = {
             label = null;
         }
         this.currentPageOrder[this.currentPage]['label'] = label;
-        this.thumbnails[this.currentPage].find('.label').text(label);
+        this.thumbnails[this.currentPage].find('.label').empty().text(label);
+        this.recalculateMagicLabels();
     }
 };
