@@ -7,7 +7,7 @@
 .thumbnail.selected {
     border: 1px solid red;
 }
-.preview {
+.preview, #zoomy {
     clear: left;
     float: left;
 }

@@ -1,12 +1,14 @@
 var VuDLPrep = {
     init: function (url, container) {
         this.url = url;
+        this.zoom = false;
         this.container = container;
         this.pagePrefixes = ['Front ', 'Rear '];
         this.pageLabels = ['cover', 'fly leaf', 'pastedown', 'Frontispiece', 'Plate'];
         this.pageSuffixes = [', recto', ', verso'];
         this.buildJobSelector();
         this.buildPaginator();
+        Zoomy.init(document.getElementById('zoomy'));
     },
 
     buildJobSelector: function () {
@@ -21,6 +23,11 @@ var VuDLPrep = {
         this.paginator.append(this.paginatorList);
         this.paginatorPreview = $('<div class="preview"></div>');
         this.paginator.append(this.paginatorPreview);
+        this.paginatorZoomy = $('<canvas id="zoomy"></canvas>');
+        this.paginatorZoomy.attr('width', 800);
+        this.paginatorZoomy.attr('height', 600);
+        this.paginatorZoomy.hide();
+        this.paginator.append(this.paginatorZoomy);
         this.paginatorControls = this.buildPaginatorControls();
         this.paginator.append(this.paginatorControls);
         this.paginator.hide();
@@ -59,6 +66,10 @@ var VuDLPrep = {
         pageNext.click(function() { that.switchPage(1); })
         pageNavigation.append(pageNext);
         controls.append(pageNavigation);
+
+        this.pageZoomToggle = $('<button>Turn Zoom On</button>');
+        this.pageZoomToggle.click(function() { that.toggleZoom(); });
+        controls.append(this.pageZoomToggle);
 
         var pageSave = $('<button>Save</button>');
         pageSave.click(function() { that.savePagination(); });
@@ -210,12 +221,17 @@ var VuDLPrep = {
     },
 
     loadPreview: function(category, job, filename) {
-        var currentImage = $('<img />');
-        currentImage.attr(
-            'src', this.getImageUrl(category, job, filename, 'medium')
-        );
-        this.paginatorPreview.empty();
-        this.paginatorPreview.append(currentImage);
+        if (this.zoom) {
+            var large = this.getImageUrl(category, job, filename, 'large');
+            Zoomy.load(large);
+        } else {
+            var currentImage = $('<img />');
+            currentImage.attr(
+                'src', this.getImageUrl(category, job, filename, 'medium')
+            );
+            this.paginatorPreview.empty();
+            this.paginatorPreview.append(currentImage);
+        }
     },
 
     savePagination: function() {
@@ -334,6 +350,23 @@ var VuDLPrep = {
         if (typeof this.currentPageOrder[newPage] !== 'undefined') {
             this.selectPage(newPage);
         }
+    },
+
+    toggleZoom: function() {
+        this.zoom = !this.zoom;
+        if (this.zoom) {
+            this.paginatorZoomy.show();
+            this.paginatorPreview.hide();
+            this.pageZoomToggle.text('Turn Zoom Off');
+        } else {
+            this.paginatorZoomy.hide();
+            this.paginatorPreview.show();
+            this.pageZoomToggle.text('Turn Zoom On');
+        }
+        this.loadPreview(
+            this.currentCategory, this.currentJob,
+            this.currentPageOrder[this.currentPage]['filename']
+        );
     },
 
     updateCurrentPageLabel: function() {
