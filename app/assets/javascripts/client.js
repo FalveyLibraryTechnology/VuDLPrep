@@ -57,6 +57,9 @@ var VuDLPrep = {
         var toggleBrackets = $('<button>Toggle []</button>');
         toggleBrackets.click(function() { that.toggleBrackets(); });
         pageConversion.append(toggleBrackets);
+        var toggleRoman = $('<button>Toggle Roman Numerals</button>');
+        toggleRoman.click(function() { that.toggleRoman(); });
+        pageConversion.append(toggleRoman);
         controls.append(pageConversion);
         var pageNavigation = $('<div class="navigation"></div>');
         var pagePrev = $('<button>Prev</button>');
@@ -330,6 +333,21 @@ var VuDLPrep = {
     toggleBrackets: function() {
         var label = this.parsePageLabel(this.pageInput.val());
         label['brackets'] = !label['brackets'];
+        this.pageInput.val(this.assemblePageLabel(label));
+        this.updateCurrentPageLabel();
+    },
+
+    toggleRoman: function() {
+        var label = this.parsePageLabel(this.pageInput.val());
+        if (parseInt(label['label']) > 0) {
+            label['label'] = RomanNumerals.toRoman(label['label']);
+        } else {
+            try {
+                label['label'] = RomanNumerals.toArabic(label['label']);
+            } catch (e) {
+                alert('Cannot convert current value.');
+            }
+        }
         this.pageInput.val(this.assemblePageLabel(label));
         this.updateCurrentPageLabel();
     },
