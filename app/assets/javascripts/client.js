@@ -57,6 +57,9 @@ var VuDLPrep = {
         var toggleBrackets = $('<button>Toggle []</button>');
         toggleBrackets.click(function() { that.toggleBrackets(); });
         pageConversion.append(toggleBrackets);
+        var toggleCase = $('<button>Toggle Case</button>');
+        toggleCase.click(function() { that.toggleCase(); });
+        pageConversion.append(toggleCase);
         var toggleRoman = $('<button>Toggle Roman Numerals</button>');
         toggleRoman.click(function() { that.toggleRoman(); });
         pageConversion.append(toggleRoman);
@@ -261,6 +264,20 @@ var VuDLPrep = {
                 priorLabel['label'] = parseInt(priorLabel['label']) + 1;
                 return this.assemblePageLabel(priorLabel);
             }
+            // Try roman numerals as a last resort.
+            try {
+                var arabic = RomanNumerals.toArabic(priorLabel['label']);
+                var isUpper = (priorLabel['label'] == priorLabel['label'].toUpperCase());
+                if (arabic > 0) {
+                    priorLabel['label'] = RomanNumerals.toRoman(arabic + 1);
+                    if (!isUpper) {
+                        priorLabel['label'] = priorLabel['label'].toLowerCase();
+                    }
+                    return this.assemblePageLabel(priorLabel);
+                }
+            } catch (e) {
+                // Exception thrown! Guess it's not going to work!
+            }
         }
         return 1;
     },
@@ -334,6 +351,17 @@ var VuDLPrep = {
         var label = this.parsePageLabel(this.pageInput.val());
         label['brackets'] = !label['brackets'];
         this.pageInput.val(this.assemblePageLabel(label));
+        this.updateCurrentPageLabel();
+    },
+
+    toggleCase: function() {
+        var label = this.pageInput.val();
+        if (label == label.toLowerCase()) {
+            label = label.toUpperCase();
+        } else {
+            label = label.toLowerCase();
+        }
+        this.pageInput.val(label);
         this.updateCurrentPageLabel();
     },
 
