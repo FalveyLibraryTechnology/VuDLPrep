@@ -72,6 +72,9 @@ var VuDLPrep = {
         pageNext.click(function() { that.switchPage(1); })
         pageNavigation.append(pageNext);
         controls.append(pageNavigation);
+        var autonumberNext = $('<button>Autonumber Following Pages</button>');
+        autonumberNext.click(function() { that.autonumberFollowingPages(); });
+        pageNavigation.append(autonumberNext);
 
         this.pageZoomToggle = $('<button>Turn Zoom On</button>');
         this.pageZoomToggle.click(function() { that.toggleZoom(); });
@@ -240,9 +243,24 @@ var VuDLPrep = {
         }
     },
 
-    countMagicLabels: function() {
+    autonumberFollowingPages: function() {
+        var pages = this.currentPageOrder.length - (this.currentPage + 1);
+        var affected = pages - this.countMagicLabels(this.currentPage + 1);
+        if (affected > 0) {
+            var msg = "You will be clearing " + affected + " label(s). Are you sure?";
+            if (!confirm(msg)) {
+                return;
+            }
+        }
+        for (var i = this.currentPage + 1; i < this.currentPageOrder.length; i++) {
+            this.currentPageOrder[i]['label'] = null;
+        }
+        this.recalculateMagicLabels();
+    },
+
+    countMagicLabels: function(startAt) {
         var count = 0;
-        for (var i = 0; i < this.currentPageOrder.length; i++) {
+        for (var i = startAt; i < this.currentPageOrder.length; i++) {
             if (null === this.currentPageOrder[i]['label']) {
                 count++;
             }
@@ -266,7 +284,7 @@ var VuDLPrep = {
 
     savePagination: function() {
         this.updateCurrentPageLabel();
-        var count = this.countMagicLabels();
+        var count = this.countMagicLabels(0);
         if (count > 0 && !this.confirmSavedMagicLabels(count)) {
             return;
         }
