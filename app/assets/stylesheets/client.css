@@ -12,6 +12,9 @@
 .thumbnail.selected {
     border: 1px solid red;
 }
+.thumbnail .number {
+    float: left;
+}
 .preview, #zoomy {
     clear: left;
     float: left;

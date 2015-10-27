@@ -36,6 +36,8 @@ var VuDLPrep = {
 
     buildPaginatorControls: function() {
         var controls = $('<div class="controls"></div>');
+        this.pageLabelStatus = $('<div></div>');
+        controls.append(this.pageLabelStatus);
         this.pageInput = $('<input type="text" id="page" />');
         var that = this;
         this.pageInput.on('change', function () { that.updateCurrentPageLabel(); });
@@ -220,6 +222,8 @@ var VuDLPrep = {
                 var currentImage = $('<img />');
                 currentImage.attr('src', that.getImageUrl(category, job, data['order'][i]['filename'], 'thumb'))
                 currentThumb.append(currentImage);
+                var currentNumber = $('<div class="number"></div>').text(i + 1);
+                currentThumb.append(currentNumber);
                 var currentLabel = $('<div class="label"></div>').text(data['order'][i]['label']);
                 currentThumb.append(currentLabel);
                 target.append(currentThumb);
@@ -473,6 +477,9 @@ var VuDLPrep = {
             this.currentCategory, this.currentJob, this.currentPageOrder[p]['filename']
         );
         this.recalculateMagicLabels();
+        this.pageLabelStatus.text(
+            "Editing label " + (p + 1) + " of " + this.thumbnails.length
+        )
     },
 
     switchPage: function(delta) {
