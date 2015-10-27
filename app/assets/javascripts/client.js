@@ -403,6 +403,7 @@ var VuDLPrep = {
         $('.thumbnail').removeClass('selected');
         this.pageInput.val(this.getPageLabel(p));
         this.thumbnails[p].addClass('selected');
+        this.thumbnails[p].get(0).scrollIntoView();
         this.currentPage = p;
         this.loadPreview(
             this.currentCategory, this.currentJob, this.currentPageOrder[p]['filename']
