@@ -240,8 +240,37 @@ var VuDLPrep = {
         }
     },
 
+    countMagicLabels: function() {
+        var count = 0;
+        for (var i = 0; i < this.currentPageOrder.length; i++) {
+            if (null === this.currentPageOrder[i]['label']) {
+                count++;
+            }
+        }
+        return count;
+    },
+
+    saveMagicLabels: function() {
+        for (var i = 0; i < this.currentPageOrder.length; i++) {
+            if (null === this.currentPageOrder[i]['label']) {
+                this.currentPageOrder[i]['label'] = this.getMagicPageLabel(i);
+            }
+        }
+    },
+
+    confirmSavedMagicLabels: function(count) {
+        var msg = "You will be saving " + count + " unreviewed, auto-generated"
+            + " label(s). Are you sure?";
+        return confirm(msg);
+    },
+
     savePagination: function() {
         this.updateCurrentPageLabel();
+        var count = this.countMagicLabels();
+        if (count > 0 && !this.confirmSavedMagicLabels(count)) {
+            return;
+        }
+        this.saveMagicLabels();
         var that = this;
         $.ajax({
             type: 'PUT',
