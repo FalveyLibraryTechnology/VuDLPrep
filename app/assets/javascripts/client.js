@@ -300,7 +300,29 @@ var VuDLPrep = {
         });
     },
 
-    getMagicPageLabel: function(p) {
+    adjustNumericLabel: function(prior, delta) {
+        // If it's an integer, this is simple:
+        if (parseInt(prior) > 0) {
+            return parseInt(prior) + delta;
+        }
+        // Try roman numerals as a last resort.
+        try {
+            var arabic = RomanNumerals.toArabic(prior);
+            var isUpper = (prior == prior.toUpperCase());
+            if (arabic > 0) {
+                var newLabel = RomanNumerals.toRoman(arabic + delta);
+                if (!isUpper) {
+                    newLabel = newLabel.toLowerCase();
+                }
+                return newLabel;
+            }
+        } catch (e) {
+            // Exception thrown! Guess it's not going to work!
+        }
+        return false;
+    },
+
+    getMagicPageLabelFromPrevPage: function(p) {
         var skipRectoCheck = false;
         while (p > 0) {
             var priorLabel = this.parsePageLabel(this.getPageLabel(p - 1));
@@ -308,23 +330,11 @@ var VuDLPrep = {
                 priorLabel['suffix'] = ', verso';
                 return this.assemblePageLabel(priorLabel);
             }
-            if (parseInt(priorLabel['label']) > 0) {
-                priorLabel['label'] = parseInt(priorLabel['label']) + 1;
+
+            var numericLabel = this.adjustNumericLabel(priorLabel['label'], 1);
+            if (false !== numericLabel) {
+                priorLabel['label'] = numericLabel;
                 return this.assemblePageLabel(priorLabel);
-            }
-            // Try roman numerals as a last resort.
-            try {
-                var arabic = RomanNumerals.toArabic(priorLabel['label']);
-                var isUpper = (priorLabel['label'] == priorLabel['label'].toUpperCase());
-                if (arabic > 0) {
-                    priorLabel['label'] = RomanNumerals.toRoman(arabic + 1);
-                    if (!isUpper) {
-                        priorLabel['label'] = priorLabel['label'].toLowerCase();
-                    }
-                    return this.assemblePageLabel(priorLabel);
-                }
-            } catch (e) {
-                // Exception thrown! Guess it's not going to work!
             }
 
             // If we couldn't determine a label based on the previous page,
@@ -335,6 +345,13 @@ var VuDLPrep = {
             skipRectoCheck = true;
         }
         return 1;
+    },
+
+    getMagicPageLabel: function(p) {
+        // Did some experimentation with getMagicPageLabelFromNextPage to
+        // complement getMagicPageLabelFromPrevPage, but it winded up having
+        // too much recursion and making things too slow.
+        return this.getMagicPageLabelFromPrevPage(p);
     },
 
     getPageLabel: function(p) {
