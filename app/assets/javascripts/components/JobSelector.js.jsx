@@ -16,12 +16,11 @@ var JobSelector = React.createClass({
     },
 
     render: function() {
-        var that = this;
         var categories = this.state.data.map(function (category) {
             return (
-                <Category onJobSelect={that.props.onJobSelect} key={category.category} data={category} />
+                <Category onJobSelect={this.props.onJobSelect} key={category.category} data={category} />
             );
-        });
+        }.bind(this));
         return (
             <div className={this.state.active ? '' : 'hidden'} id="jobSelector">
                 {categories}
@@ -43,12 +42,11 @@ var Category = React.createClass({
 
 var JobList = React.createClass({
     render: function() {
-        var that = this;
         var jobs = this.props.data.map(function (job) {
             return (
-                <Job category={that.props.category} onJobSelect={that.props.onJobSelect} key={that.props.category + '|' + job}>{job}</Job>
+                <Job category={this.props.category} onJobSelect={this.props.onJobSelect} key={this.props.category + '|' + job}>{job}</Job>
             );
-        });
+        }.bind(this));
         return (
             <ul>{jobs}</ul>
         );
@@ -87,13 +85,12 @@ var JobLink = React.createClass({
         var newState = this.state;
         newState.building = true;
         this.setState(newState);
-        var that = this;
         $.ajax({
             type: 'PUT',
             url: this.getDerivUrl(),
             contentType: 'application/json',
             data: '{}',
-            success: function() { that.updateDerivativeStatus(); },
+            success: function() { this.updateDerivativeStatus(); }.bind(this),
         });
     },
 
@@ -101,9 +98,8 @@ var JobLink = React.createClass({
         if (typeof e !== 'undefined') {
             e.stopPropagation();
         }
-        var that = this;
         jQuery.getJSON(this.getDerivUrl(), null, function (data) {
-            data.building = that.state.building;
+            data.building = this.state.building;
             this.setState(data);
         }.bind(this));
         if (this.state.building) {
