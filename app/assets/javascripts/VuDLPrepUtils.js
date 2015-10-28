@@ -6,15 +6,8 @@ var VuDLPrepUtils = {
         this.pagePrefixes = ['Front ', 'Rear '];
         this.pageLabels = ['Blank', 'cover', 'fly leaf', 'pastedown', 'Frontispiece', 'Plate'];
         this.pageSuffixes = [', recto', ', verso'];
-        this.buildJobSelector();
         this.buildPaginator();
         Zoomy.init(document.getElementById('zoomy'));
-    },
-
-    buildJobSelector: function () {
-        this.jobSelector = $('<div id="jobSelector"></div>');
-        this.container.append(this.jobSelector);
-        this.fetchJobs(this.jobSelector);
     },
 
     buildPaginator: function() {
@@ -112,95 +105,11 @@ var VuDLPrepUtils = {
         return group;
     },
 
-    fetchJobs: function(target) {
-        var that = this;
-        jQuery.getJSON(this.url, null, function (data, status) {
-            target.empty();
-            for (var i = 0 ; i < data.length; i++) {
-                var current = data[i];
-                var currentCategory = current['category'];
-                if (current['jobs'].length > 0) {
-                    var currentElement = $('<div class="jobCategory"></div>');
-                    currentElement.append($('<h2></h2>').text(currentCategory));
-                    var currentList = $('<ul></ul>');
-                    currentElement.append(currentList);
-                    for (var j = 0; j < current['jobs'].length; j++) {
-                        var currentItem = $('<li></li>');
-                        var currentJob = current['jobs'][j];
-                        var currentLink = $('<a href="#" />').text(currentJob);
-                        currentLink.click(
-                            that.getJobSelector(currentCategory, currentJob)
-                        );
-                        var currentStatus = $("<span> checking...</span>");
-                        that.updateJobDerivativeStatus(
-                            currentCategory, currentJob, currentStatus
-                        );
-                        currentItem.append(currentLink);
-                        currentItem.append(currentStatus);
-                        currentList.append(currentItem);
-                    }
-                    target.append(currentElement);
-                }
-            }
-        });
-    },
-
-    getJobSelector: function(category, job) {
-        var that = this;
-        return function () {
-            return that.selectJob(category, job);
-        }
-    },
-
-    updateJobDerivativeStatus: function(category, job, element) {
-        var that = this;
-        var derivUrl = this.getJobUrl(category, job, '/derivatives');
-        jQuery.getJSON(derivUrl, null, function (data) {
-            element.empty();
-            var addLinks, status;
-            if (data['expected'] === data['processed']) {
-                status = " [ready]";
-                addLinks = false;
-            } else {
-                status = " [derivatives: " + data['processed'] + "/" + data['expected'] + "] ";
-                addLinks = true;
-            }
-            element.empty().text(status);
-            if (addLinks) {
-                var refresh = $('<a href="#">[refresh]</a>');
-                refresh.click(function() {
-                    element.empty().text(' checking...');
-                    that.updateJobDerivativeStatus(category, job, element);
-                });
-                var build = $('<a href="#">[build]</a>');
-                build.click(function() {
-                    element.empty().text(' triggering...');
-                    $.ajax({
-                        type: 'PUT',
-                        url: derivUrl,
-                        contentType: 'application/json',
-                        data: '{}',
-                        success: function() { that.updateJobDerivativeStatus(category, job, element); },
-                        error: function() { element.empty().text(' failed!'); }
-                    });
-                    that.updateJobDerivativeStatus(category, job, element);
-                });
-                element.append(refresh);
-                element.append(build);
-            }
-        });
-    },
-
     getPageSelector: function(p) {
         var that = this;
         return function () {
             return that.selectPage(p);
         }
-    },
-
-    activateJobSelector: function() {
-        this.jobSelector.show();
-        this.paginator.hide();
     },
 
     selectJob: function(category, job) {

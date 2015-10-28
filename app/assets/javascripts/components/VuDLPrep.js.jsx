@@ -5,7 +5,7 @@ var VuDLPrep = React.createClass({
 
     selectJob: function (category, job) {
         this.refs.selector.hide();
-        this.refs.paginator.setState({active: true});
+        this.refs.paginator.loadJob(category, job);
     },
 
     render: function() {
