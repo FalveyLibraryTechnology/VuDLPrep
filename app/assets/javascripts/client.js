@@ -98,8 +98,8 @@ var VuDLPrep = {
         pageNext.click(function() { that.switchPage(1); })
         var autonumberNext = $('<button>Autonumber Following Pages</button>');
         autonumberNext.click(function() { that.autonumberFollowingPages(); });
-        pagingGroup.append(pageNext);
         pagingGroup.append(pagePrev);
+        pagingGroup.append(pageNext);
         pageNavigation.append(pagingGroup);
         pageNavigation.append(autonumberNext);
         controls.append(pageNavigation);
