@@ -1,31 +1,83 @@
-.hidden {
-    display: none;
+body {
+  background: #eee;
+  font: 14px Arial;
+}
+.controls > button { margin: 0 0 2px; }
+.pageList {
+  overflow: auto;
+  height: 500px;
+  padding: 6px;
+  border: 1px solid #aaa;
+  background-color: #fff;
+}
+.preview, #zoomy { text-align: center; }
+.top {
+  position: absolute;
+  top: 8px;
+  right: 8px;
 }
 
-.pageList {
-    overflow: auto;
-    height: 170px;
+input,
+.status { float: left; }
+input,
+button,
+.status {
+  box-sizing: border-box;
+  height: 26px;
 }
+input {
+  margin-right: 4px;
+  padding: 0 2px;
+}
+.status {
+  margin: 0 6px 0 0;
+  padding: 0;
+  padding-top: 5px;
+}
+
+button {
+  margin: 0 2px;
+  padding: 0 6px;
+  border: 1px solid #777;
+  background-color: #fff;
+  cursor: pointer;
+}
+button.primary {
+  border: 0;
+  background-color: #00c;
+  color: #fff;
+}
+.group {
+  clear: both;
+  margin: 2px;
+  margin-left: 0;
+}
+.group button {
+  margin: 0;
+  border-right-width: 0;
+}
+.group button:last-child { border-right-width: 1px; }
 
 .thumbnail {
-    float: left;
-    padding: 5px;
-    margin: 5px;
-    border: 1px solid black;
+  position: relative;
+  float: left;
+  margin: 5px;
+  padding: 5px;
+  border: 1px solid black;
+  text-align: center;
+  cursor: pointer;
 }
-.thumbnail.selected {
-    border: 1px solid red;
-}
+.thumbnail.selected { border: 1px solid red; }
 .thumbnail .number {
-    float: left;
+  position: absolute;
+  display: table;
+  top: 0;
+  left: 0;
+  padding: 2px;
+  font-size: 10px;
+  background: #fff;
+  color: #000;
 }
-.preview, #zoomy {
-    clear: left;
-    float: left;
-    min-width: 800px;
-    text-align: center;
-}
-
-.controls {
-    float: left;
+.hidden {
+  display: none;
 }
