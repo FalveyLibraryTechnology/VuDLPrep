@@ -1,3 +1,7 @@
+.hidden {
+    display: none;
+}
+
 .pageList {
     overflow: auto;
     height: 170px;

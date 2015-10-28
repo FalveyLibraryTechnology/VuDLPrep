@@ -1,4 +1,1 @@
-<div id="vudlprep">
-</div>
-
-<script>$(document).ready(function() { VuDLPrep.init("<%= url_for controller: 'list', action: 'index' %>", $('#vudlprep')); });</script>
+<%= react_component('VuDLPrep', url: url_for(controller: 'list', action: 'index')) %>

@@ -1,4 +1,4 @@
-var VuDLPrep = {
+var VuDLPrepUtils = {
     init: function (url, container) {
         this.url = url;
         this.zoom = false;
