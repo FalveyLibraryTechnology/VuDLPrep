@@ -19,29 +19,37 @@ var VuDLPrep = {
 
     buildPaginator: function() {
         this.paginator = $('<div id="paginator"></div>');
-        this.paginatorList = $('<div class="pageList"></div>');
-        this.paginator.append(this.paginatorList);
+        var rightSide = $('<div class="six col"></div>');
+        this.paginatorControls = this.buildPaginatorControls(rightSide);
+        this.paginator.append(this.paginatorControls);
+        var row = $('<div class="row"></div>');
+        var leftSide = $('<div class="six col"></div>');
         this.paginatorPreview = $('<div class="preview"></div>');
-        this.paginator.append(this.paginatorPreview);
+        leftSide.append(this.paginatorPreview);
         this.paginatorZoomy = $('<canvas id="zoomy"></canvas>');
         this.paginatorZoomy.attr('width', 800);
         this.paginatorZoomy.attr('height', 600);
         this.paginatorZoomy.hide();
-        this.paginator.append(this.paginatorZoomy);
-        this.paginatorControls = this.buildPaginatorControls();
-        this.paginator.append(this.paginatorControls);
+        leftSide.append(this.paginatorZoomy);
+        this.paginatorList = $('<div class="pageList"></div>');
+        rightSide.append(this.paginatorList);
+        row.append(leftSide);
+        row.append(rightSide);
+        this.paginator.append(row);
         this.paginator.hide();
         this.container.append(this.paginator);
     },
 
-    buildPaginatorControls: function() {
+    buildPaginatorControls: function(rightSide) {
         var controls = $('<div class="controls"></div>');
-        this.pageLabelStatus = $('<div></div>');
-        controls.append(this.pageLabelStatus);
+        var group = $('<div class="group"></div>');
+        this.pageLabelStatus = $('<div class="status"></div>');
+        group.append(this.pageLabelStatus);
         this.pageInput = $('<input type="text" id="page" />');
         var that = this;
         this.pageInput.on('change', function () { that.updateCurrentPageLabel(); });
-        controls.append(this.pageInput);
+        group.append(this.pageInput);
+        controls.append(group);
 
         var prefixGroup = this.buildPaginatorControlGroup(
             this.pagePrefixes, function (t) { that.setPagePrefix(t); }
@@ -55,7 +63,7 @@ var VuDLPrep = {
             this.pageSuffixes, function (t) { that.setPageSuffix(t); }
         );
         controls.append(suffixGroup);
-        var pageConversion = $('<div class="toggles"></div>');
+        var pageConversion = $('<div class="toggles group"></div>');
         var toggleBrackets = $('<button>Toggle []</button>');
         toggleBrackets.click(function() { that.toggleBrackets(); });
         pageConversion.append(toggleBrackets);
@@ -66,17 +74,17 @@ var VuDLPrep = {
         toggleRoman.click(function() { that.toggleRoman(); });
         pageConversion.append(toggleRoman);
         controls.append(pageConversion);
-        var pageNavigation = $('<div class="navigation"></div>');
+        var pageNavigation = $('<div class="navigation group"></div>');
         var pagePrev = $('<button>Prev</button>');
         pagePrev.click(function() { that.switchPage(-1); })
         pageNavigation.append(pagePrev);
         var pageNext = $('<button>Next</button>');
         pageNext.click(function() { that.switchPage(1); })
         pageNavigation.append(pageNext);
-        controls.append(pageNavigation);
+        rightSide.append(pageNavigation);
         var autonumberNext = $('<button>Autonumber Following Pages</button>');
         autonumberNext.click(function() { that.autonumberFollowingPages(); });
-        pageNavigation.append(autonumberNext);
+        rightSide.append(autonumberNext);
 
         this.pageZoomToggle = $('<button>Turn Zoom On</button>');
         this.pageZoomToggle.click(function() { that.toggleZoom(); });
@@ -89,7 +97,7 @@ var VuDLPrep = {
     },
 
     buildPaginatorControlGroup: function(options, callback) {
-        var group = $('<div class="controlGroup"></div>');
+        var group = $('<div class="group"></div>');
         for (var i = 0; i < options.length; i++) {
             var current = $('<button />').text(options[i]);
             current.click(function () { callback($(this).text()) });
@@ -468,10 +476,13 @@ var VuDLPrep = {
     },
 
     selectPage: function(p) {
+        if (typeof this.listOffset === 'undefined') {
+            this.listOffset = this.paginatorList[0].offsetTop + (this.thumbnails[0][0].offsetTop - this.paginatorList[0].offsetTop);
+        }
         $('.thumbnail').removeClass('selected');
         this.pageInput.val(this.getPageLabel(p));
         this.thumbnails[p].addClass('selected');
-        this.thumbnails[p].get(0).scrollIntoView();
+        this.paginatorList[0].scrollTop = this.thumbnails[p][0].offsetTop - this.listOffset;
         this.currentPage = p;
         this.loadPreview(
             this.currentCategory, this.currentJob, this.currentPageOrder[p]['filename']

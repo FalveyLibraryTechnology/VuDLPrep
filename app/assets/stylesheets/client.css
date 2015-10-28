@@ -1,27 +1,71 @@
-.pageList {
-    overflow: auto;
-    height: 170px;
+body {
+  background: #eee;
+  font: 14px Arial;
 }
+.controls {
+  display: table;
+  margin: 0 auto 8px;
+  padding-bottom: 8px;
+  border-bottom: 1px solid #bbb;
+}
+.pageList {
+  overflow: auto;
+  height: 600px;
+  margin-top: 6px;
+  padding: 6px;
+  border: 1px solid #bbb;
+  background-color: #fff;
+}
+.preview, #zoomy { text-align: center; }
+
+input,
+button,
+.status {
+  box-sizing: border-box;
+  height: 26px;
+}
+input { padding: 0 2px; }
+.status {
+  margin: 0 6px 0 0;
+  padding: 0;
+  padding-top: 5px;
+}
+
+button {
+  margin: 0 2px;
+  padding: 0 6px;
+  border: 1px solid #777;
+  background-color: #fff;
+  cursor: pointer;
+}
+.status,
+.group {
+  float: left;
+  margin: 0 2px;
+}
+.group button {
+  margin: 0;
+  border-right-width: 0;
+}
+.group button:last-child { border-right-width: 1px; }
 
 .thumbnail {
-    float: left;
-    padding: 5px;
-    margin: 5px;
-    border: 1px solid black;
+  position: relative;
+  float: left;
+  margin: 5px;
+  padding: 5px;
+  border: 1px solid black;
+  text-align: center;
+  cursor: pointer;
 }
-.thumbnail.selected {
-    border: 1px solid red;
-}
+.thumbnail.selected { border: 1px solid red; }
 .thumbnail .number {
-    float: left;
-}
-.preview, #zoomy {
-    clear: left;
-    float: left;
-    min-width: 800px;
-    text-align: center;
-}
-
-.controls {
-    float: left;
+  position: absolute;
+  display: table;
+  top: 0;
+  left: 0;
+  padding: 2px;
+  font-size: 10px;
+  background: #fff;
+  color: #000;
 }
