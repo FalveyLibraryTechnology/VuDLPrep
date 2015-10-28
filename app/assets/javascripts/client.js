@@ -49,6 +49,12 @@ var VuDLPrep = {
         var that = this;
         this.pageInput.on('change', function () { that.updateCurrentPageLabel(); });
         group.append(this.pageInput);
+        var pagePrev = $('<button>Prev</button>');
+        pagePrev.click(function() { that.switchPage(-1); })
+        var pageNext = $('<button>Next</button>');
+        pageNext.click(function() { that.switchPage(1); })
+        group.append(pagePrev);
+        group.append(pageNext);
         controls.append(group);
 
         var top = $('<div class="top"></div>');
@@ -89,20 +95,9 @@ var VuDLPrep = {
         pageConversion.append(toggleRoman);
         controls.append(pageConversion);
 
-        // Next / Prev buttons
-        var pageNavigation = $('<div class="navigation"></div>');
-        var pagingGroup = $('<div class="group"></div>');
-        var pagePrev = $('<button>Prev</button>');
-        pagePrev.click(function() { that.switchPage(-1); })
-        var pageNext = $('<button>Next</button>');
-        pageNext.click(function() { that.switchPage(1); })
         var autonumberNext = $('<button>Autonumber Following Pages</button>');
         autonumberNext.click(function() { that.autonumberFollowingPages(); });
-        pagingGroup.append(pagePrev);
-        pagingGroup.append(pageNext);
-        pageNavigation.append(pagingGroup);
-        pageNavigation.append(autonumberNext);
-        controls.append(pageNavigation);
+        controls.append(autonumberNext);
 
         return controls;
     },

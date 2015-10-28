@@ -2,17 +2,7 @@ body {
   background: #eee;
   font: 14px Arial;
 }
-input,
-.status,
-.navigation .group,
-.navigation > button { float: left; }
-.navigation .group { margin: 0; }
-.navigation { margin-bottom: 2px; }
-.navigation::after {
-  display: table;
-  clear: both;
-  content: "";
-}
+.controls > button { margin: 0 0 2px; }
 .pageList {
   overflow: auto;
   height: 500px;
@@ -28,13 +18,15 @@ input,
 }
 
 input,
+.status { float: left; }
+input,
 button,
 .status {
   box-sizing: border-box;
   height: 26px;
 }
 input {
-  margin-right: 2px;
+  margin-right: 4px;
   padding: 0 2px;
 }
 .status {
