@@ -19,9 +19,6 @@ var VuDLPrep = {
 
     buildPaginator: function() {
         this.paginator = $('<div id="paginator"></div>');
-        var rightSide = $('<div class="six col"></div>');
-        this.paginatorControls = this.buildPaginatorControls(rightSide);
-        this.paginator.append(this.paginatorControls);
         var row = $('<div class="row"></div>');
         var leftSide = $('<div class="six col"></div>');
         this.paginatorPreview = $('<div class="preview"></div>');
@@ -31,6 +28,9 @@ var VuDLPrep = {
         this.paginatorZoomy.attr('height', 600);
         this.paginatorZoomy.hide();
         leftSide.append(this.paginatorZoomy);
+        var rightSide = $('<div class="six col"></div>');
+        this.paginatorControls = this.buildPaginatorControls();
+        rightSide.append(this.paginatorControls);
         this.paginatorList = $('<div class="pageList"></div>');
         rightSide.append(this.paginatorList);
         row.append(leftSide);
@@ -40,7 +40,7 @@ var VuDLPrep = {
         this.container.append(this.paginator);
     },
 
-    buildPaginatorControls: function(rightSide) {
+    buildPaginatorControls: function() {
         var controls = $('<div class="controls"></div>');
         var group = $('<div class="group"></div>');
         this.pageLabelStatus = $('<div class="status"></div>');
@@ -51,6 +51,17 @@ var VuDLPrep = {
         group.append(this.pageInput);
         controls.append(group);
 
+        var top = $('<div class="top"></div>');
+        this.pageZoomToggle = $('<button>Turn Zoom On</button>');
+        this.pageZoomToggle.click(function() { that.toggleZoom(); });
+        top.append(this.pageZoomToggle);
+
+        var pageSave = $('<button class="primary">Save</button>');
+        pageSave.click(function() { that.savePagination(); });
+        top.append(pageSave);
+        controls.append(top);
+
+        // Make button groups
         var prefixGroup = this.buildPaginatorControlGroup(
             this.pagePrefixes, function (t) { that.setPagePrefix(t); }
         );
@@ -63,36 +74,33 @@ var VuDLPrep = {
             this.pageSuffixes, function (t) { that.setPageSuffix(t); }
         );
         controls.append(suffixGroup);
+
         var pageConversion = $('<div class="toggles group"></div>');
         var toggleBrackets = $('<button>Toggle []</button>');
         toggleBrackets.click(function() { that.toggleBrackets(); });
         pageConversion.append(toggleBrackets);
+
         var toggleCase = $('<button>Toggle Case</button>');
         toggleCase.click(function() { that.toggleCase(); });
         pageConversion.append(toggleCase);
+
         var toggleRoman = $('<button>Toggle Roman Numerals</button>');
         toggleRoman.click(function() { that.toggleRoman(); });
         pageConversion.append(toggleRoman);
         controls.append(pageConversion);
+
+        // Next / Prev buttons
         var pageNavigation = $('<div class="navigation group"></div>');
         var pagePrev = $('<button>Prev</button>');
         pagePrev.click(function() { that.switchPage(-1); })
-        pageNavigation.append(pagePrev);
         var pageNext = $('<button>Next</button>');
         pageNext.click(function() { that.switchPage(1); })
-        pageNavigation.append(pageNext);
-        rightSide.append(pageNavigation);
         var autonumberNext = $('<button>Autonumber Following Pages</button>');
         autonumberNext.click(function() { that.autonumberFollowingPages(); });
-        rightSide.append(autonumberNext);
-
-        this.pageZoomToggle = $('<button>Turn Zoom On</button>');
-        this.pageZoomToggle.click(function() { that.toggleZoom(); });
-        controls.append(this.pageZoomToggle);
-
-        var pageSave = $('<button>Save</button>');
-        pageSave.click(function() { that.savePagination(); });
-        controls.append(pageSave);
+        // Build page
+        pageNavigation.append(pageNext);
+        pageNavigation.append(pagePrev);
+        pageNavigation.append(autonumberNext);
         return controls;
     },
 

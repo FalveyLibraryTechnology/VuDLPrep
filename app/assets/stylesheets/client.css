@@ -2,21 +2,22 @@ body {
   background: #eee;
   font: 14px Arial;
 }
-.controls {
-  display: table;
-  margin: 0 auto 8px;
-  padding-bottom: 8px;
-  border-bottom: 1px solid #bbb;
-}
+input,
+.status,
+.controls > button { float: left; }
 .pageList {
   overflow: auto;
-  height: 600px;
-  margin-top: 6px;
+  height: 500px;
   padding: 6px;
-  border: 1px solid #bbb;
+  border: 1px solid #aaa;
   background-color: #fff;
 }
 .preview, #zoomy { text-align: center; }
+.top {
+  position: absolute;
+  top: 8px;
+  right: 8px;
+}
 
 input,
 button,
@@ -24,7 +25,10 @@ button,
   box-sizing: border-box;
   height: 26px;
 }
-input { padding: 0 2px; }
+input {
+  margin-right: 2px;
+  padding: 0 2px;
+}
 .status {
   margin: 0 6px 0 0;
   padding: 0;
@@ -38,10 +42,15 @@ button {
   background-color: #fff;
   cursor: pointer;
 }
-.status,
+button.primary {
+  border: 0;
+  background-color: #00c;
+  color: #fff;
+}
 .group {
-  float: left;
-  margin: 0 2px;
+  clear: both;
+  margin: 2px;
+  margin-left: 0;
 }
 .group button {
   margin: 0;
