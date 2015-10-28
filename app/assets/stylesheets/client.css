@@ -4,7 +4,15 @@ body {
 }
 input,
 .status,
-.controls > button { float: left; }
+.navigation .group,
+.navigation > button { float: left; }
+.navigation .group { margin: 0; }
+.navigation { margin-bottom: 2px; }
+.navigation::after {
+  display: table;
+  clear: both;
+  content: "";
+}
 .pageList {
   overflow: auto;
   height: 500px;

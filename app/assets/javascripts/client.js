@@ -90,17 +90,20 @@ var VuDLPrep = {
         controls.append(pageConversion);
 
         // Next / Prev buttons
-        var pageNavigation = $('<div class="navigation group"></div>');
+        var pageNavigation = $('<div class="navigation"></div>');
+        var pagingGroup = $('<div class="group"></div>');
         var pagePrev = $('<button>Prev</button>');
         pagePrev.click(function() { that.switchPage(-1); })
         var pageNext = $('<button>Next</button>');
         pageNext.click(function() { that.switchPage(1); })
         var autonumberNext = $('<button>Autonumber Following Pages</button>');
         autonumberNext.click(function() { that.autonumberFollowingPages(); });
-        // Build page
-        pageNavigation.append(pageNext);
-        pageNavigation.append(pagePrev);
+        pagingGroup.append(pageNext);
+        pagingGroup.append(pagePrev);
+        pageNavigation.append(pagingGroup);
         pageNavigation.append(autonumberNext);
+        controls.append(pageNavigation);
+
         return controls;
     },
 
