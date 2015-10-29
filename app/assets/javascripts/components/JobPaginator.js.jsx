@@ -8,7 +8,7 @@ var JobPaginator = React.createClass({
     },
 
     getInitialState: function() {
-        return {active: false, currentPage: 0, order: []};
+        return {active: false, currentPage: 0, zoom: false, order: []};
     },
 
     loadJob: function(category, job) {
@@ -33,14 +33,20 @@ var JobPaginator = React.createClass({
         alert('save');
     },
 
+    toggleZoom: function() {
+        newState = this.state;
+        newState.zoom = !newState.zoom;
+        this.setState(newState);
+    },
+
     render: function() {
+        var preview = this.state.zoom
+            ? <PaginatorZoomy />
+            : <PaginatorPreview img={this.getImageUrl(this.state.currentPage, 'medium')} />
         return (
             <div className={this.state.active ? '' : 'hidden'} id="paginator">
                 <div className="row">
-                    <div className="six col">
-                        <PaginatorPreview img={this.getImageUrl(this.state.currentPage, 'medium')} />
-                        <PaginatorZoomy />
-                    </div>
+                    <div className="six col">{preview}</div>
                     <div className="six col">
                         <PaginatorControls paginator={this} />
                         <PaginatorList paginator={this}>{this.state.order}</PaginatorList>
@@ -90,7 +96,7 @@ var PaginatorControls = React.createClass({
                     <button onClick={this.props.paginator.nextPage}>Next</button>
                 </div>
                 <div className="top">
-                    <ZoomToggleButton />
+                    <ZoomToggleButton paginator={this.props.paginator} />
                     <button className="primary" onClick={this.props.paginator.save}>Save</button>
                 </div>
                 <PaginatorControlGroup>{this.prefixes}</PaginatorControlGroup>
@@ -146,13 +152,9 @@ var Thumbnail = React.createClass({
 });
 
 var ZoomToggleButton = React.createClass({
-    getInitialState: function() {
-        return {zoom: false};
-    },
-
     render: function() {
         return (
-            <button>{this.state.zoom ? 'Turn Zoom Off' : 'Turn Zoom On'}</button>
+            <button onClick={this.props.paginator.toggleZoom}>{this.props.paginator.state.zoom ? 'Turn Zoom Off' : 'Turn Zoom On'}</button>
         );
     }
 });
