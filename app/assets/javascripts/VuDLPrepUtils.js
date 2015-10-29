@@ -121,18 +121,6 @@ var VuDLPrepUtils = {
         this.loadPageList(category, job, this.paginatorList);
     },
 
-    getImageUrl: function(category, job, filename, size) {
-        return this.getJobUrl(
-            category, job,
-            '/' + encodeURIComponent(filename) + '/' + encodeURIComponent(size)
-        );
-    },
-
-    getJobUrl: function(category, job, extra) {
-        return this.url + '/' + encodeURIComponent(category) + '/'
-            + encodeURIComponent(job) + extra;
-    },
-
     loadPageList: function(category, job, target) {
         var that = this;
         target.empty();

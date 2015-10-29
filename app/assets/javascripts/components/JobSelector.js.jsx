@@ -18,7 +18,7 @@ var JobSelector = React.createClass({
     render: function() {
         var categories = this.state.data.map(function (category) {
             return (
-                <Category onJobSelect={this.props.onJobSelect} key={category.category} data={category} />
+                <Category app={this.props.app} onJobSelect={this.props.onJobSelect} key={category.category} data={category} />
             );
         }.bind(this));
         return (
@@ -34,7 +34,7 @@ var Category = React.createClass({
         return (
             <div className="jobCategory">
                 <h2>{this.props.data.category}</h2>
-                <JobList onJobSelect={this.props.onJobSelect} category={this.props.data.category} data={this.props.data.jobs} />
+                <JobList app={this.props.app} onJobSelect={this.props.onJobSelect} category={this.props.data.category} data={this.props.data.jobs} />
             </div>
         );
     }
@@ -44,7 +44,7 @@ var JobList = React.createClass({
     render: function() {
         var jobs = this.props.data.map(function (job) {
             return (
-                <Job category={this.props.category} onJobSelect={this.props.onJobSelect} key={this.props.category + '|' + job}>{job}</Job>
+                <Job app={this.props.app} category={this.props.category} onJobSelect={this.props.onJobSelect} key={this.props.category + '|' + job}>{job}</Job>
             );
         }.bind(this));
         return (
@@ -56,7 +56,7 @@ var JobList = React.createClass({
 var Job = React.createClass({
     render: function() {
         return (
-            <li><JobLink category={this.props.category} onJobSelect={this.props.onJobSelect}>{this.props.children}</JobLink></li>
+            <li><JobLink app={this.props.app} category={this.props.category} onJobSelect={this.props.onJobSelect}>{this.props.children}</JobLink></li>
         );
     }
 });
@@ -75,7 +75,7 @@ var JobLink = React.createClass({
     },
 
     getDerivUrl: function() {
-        return VuDLPrepUtils.getJobUrl(
+        return this.props.app.getJobUrl(
             this.props.category, this.props.children, '/derivatives'
         );
     },

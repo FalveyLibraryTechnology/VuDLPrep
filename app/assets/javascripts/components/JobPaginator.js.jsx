@@ -4,7 +4,7 @@ var JobPaginator = React.createClass({
             return false;
         }
         filename = this.state.order[imageNumber].filename;
-        return VuDLPrepUtils.getImageUrl(this.state.category, this.state.job, filename, size);
+        return this.props.app.getImageUrl(this.state.category, this.state.job, filename, size);
     },
 
     getInitialState: function() {
@@ -12,7 +12,7 @@ var JobPaginator = React.createClass({
     },
 
     loadJob: function(category, job) {
-        jQuery.getJSON(VuDLPrepUtils.getJobUrl(category, job, ''), null, function (data, status) {
+        jQuery.getJSON(this.props.app.getJobUrl(category, job, ''), null, function (data, status) {
             data.category = category;
             data.job = job;
             data.active = true;
