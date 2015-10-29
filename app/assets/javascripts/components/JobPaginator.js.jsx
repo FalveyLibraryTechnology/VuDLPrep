@@ -49,7 +49,7 @@ var JobPaginator = React.createClass({
 
     render: function() {
         var preview = this.state.zoom
-            ? <PaginatorZoomy />
+            ? <PaginatorZoomy img={this.getImageUrl(this.state.currentPage, 'large')} />
             : <PaginatorPreview img={this.getImageUrl(this.state.currentPage, 'medium')} />
         return (
             <div className={this.state.active ? '' : 'hidden'} id="paginator">
@@ -79,9 +79,18 @@ var PaginatorPreview = React.createClass({
 });
 
 var PaginatorZoomy = React.createClass({
+    componentDidMount: function() {
+        Zoomy.init(document.getElementById('zoomy'));
+        Zoomy.load(this.props.img);
+    },
+
+    componentDidUpdate: function() {
+        Zoomy.load(this.props.img);
+    },
+
     render: function() {
         return (
-            <div>Coming soon</div>
+            <canvas id="zoomy" width="800" height="600"></canvas>
         );
     }
 });
