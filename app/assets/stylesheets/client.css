@@ -11,6 +11,12 @@ body {
   background-color: #fff;
 }
 .preview, #zoomy { text-align: center; }
+#zoomy {
+    width: 100%; height: 600px; 
+}
+#zoomyStatus {
+    text-align: center;
+}
 .top {
   position: absolute;
   top: 8px;

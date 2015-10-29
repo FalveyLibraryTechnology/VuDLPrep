@@ -148,16 +148,26 @@ var PaginatorPreview = React.createClass({
 var PaginatorZoomy = React.createClass({
     componentDidMount: function() {
         Zoomy.init(document.getElementById('zoomy'));
-        Zoomy.load(this.props.img);
+        this.componentDidUpdate();
     },
 
     componentDidUpdate: function() {
-        Zoomy.load(this.props.img);
+        Zoomy.load(
+            this.props.img,
+            function() {
+                Zoomy.resize();
+                Zoomy.center();
+                $(this.refs.status).hide();
+            }.bind(this)
+        );
     },
 
     render: function() {
         return (
-            <canvas id="zoomy" width="800" height="600"></canvas>
+            <div>
+                <div ref="status" id="zoomyStatus">Loading...</div>
+                <canvas id="zoomy"></canvas>
+            </div>
         );
     }
 });
