@@ -17,11 +17,35 @@ var JobPaginator = React.createClass({
 
     setLabel: function(imageNumber, text) {
         var newState = this.state;
-        if (text.length == 0) {
+        if (text !== null && text.length == 0) {
             text = null;
         }
         newState.order[imageNumber]['label'] = text;
         this.setState(newState);
+    },
+
+    autonumberFollowingPages: function() {
+        var pages = this.state.order.length - (this.state.currentPage + 1);
+        var affected = pages - this.countMagicLabels(this.state.currentPage + 1);
+        if (affected > 0) {
+            var msg = "You will be clearing " + affected + " label(s). Are you sure?";
+            if (!confirm(msg)) {
+                return;
+            }
+        }
+        for (var i = this.state.currentPage + 1; i < this.state.order.length; i++) {
+            this.setLabel(i, null);
+        }
+    },
+
+    countMagicLabels: function(startAt) {
+        var count = 0;
+        for (var i = startAt; i < this.state.order.length; i++) {
+            if (null === this.getLabel(i, false)) {
+                count++;
+            }
+        }
+        return count;
     },
 
     getInitialState: function() {
@@ -140,7 +164,7 @@ var PaginatorControls = React.createClass({
                     <button>Toggle Case</button>
                     <button>Toggle Roman Numerals</button>
                 </div>
-                <button>Autonumber Following Pages</button>
+                <button onClick={this.props.paginator.autonumberFollowingPages}>Autonumber Following Pages</button>
             </div>
         );
     }
@@ -177,12 +201,16 @@ var Thumbnail = React.createClass({
     },
 
     render: function() {
+        var label = this.props.paginator.getLabel(this.props.number);
+        // check for magic labels:
+        var labelClass = 'label' +
+            (null === this.props.paginator.getLabel(this.props.number, false) ? ' magic' : '');
         var myClass = 'thumbnail' + (this.props.selected ? ' selected' : '');
         return (
             <div onClick={this.selectPage} className={myClass}>
                 <img src={this.props.paginator.getImageUrl(this.props.number, 'thumb')} />
                 <div className="number">{this.props.number + 1}</div>
-                <div className="label">{this.props.paginator.getLabel(this.props.number)}</div>
+                <div className={labelClass}>{label}</div>
             </div>
         );
     }

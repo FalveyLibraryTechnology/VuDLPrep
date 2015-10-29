@@ -1,29 +1,4 @@
 var VuDLPrepUtils = {
-    autonumberFollowingPages: function() {
-        var pages = this.currentPageOrder.length - (this.currentPage + 1);
-        var affected = pages - this.countMagicLabels(this.currentPage + 1);
-        if (affected > 0) {
-            var msg = "You will be clearing " + affected + " label(s). Are you sure?";
-            if (!confirm(msg)) {
-                return;
-            }
-        }
-        for (var i = this.currentPage + 1; i < this.currentPageOrder.length; i++) {
-            this.currentPageOrder[i]['label'] = null;
-        }
-        this.recalculateMagicLabels();
-    },
-
-    countMagicLabels: function(startAt) {
-        var count = 0;
-        for (var i = startAt; i < this.currentPageOrder.length; i++) {
-            if (null === this.currentPageOrder[i]['label']) {
-                count++;
-            }
-        }
-        return count;
-    },
-
     saveMagicLabels: function() {
         for (var i = 0; i < this.currentPageOrder.length; i++) {
             if (null === this.currentPageOrder[i]['label']) {

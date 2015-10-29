@@ -68,6 +68,7 @@ button.primary {
   cursor: pointer;
 }
 .thumbnail.selected { border: 1px solid red; }
+.thumbnail .label.magic { font-style: italic; }
 .thumbnail .number {
   position: absolute;
   display: table;
