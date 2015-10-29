@@ -9,5 +9,8 @@ class DerivativeGenerator
         image.derivative(key)
       end
     end
+    if File.exist? job.metadata.derivative_lockfile
+      File.delete job.metadata.derivative_lockfile
+    end
   end
 end

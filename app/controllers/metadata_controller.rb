@@ -1,3 +1,5 @@
+require 'fileutils'
+
 class MetadataController < ApplicationController
   def index
     dir = job_path(params)
@@ -26,7 +28,9 @@ class MetadataController < ApplicationController
     else
       job = Job.new dir
       status = job.metadata.derivative_status
-      if (status[:expected] > status[:processed])
+      lockfile = job.metadata.derivative_lockfile
+      if (status[:expected] > status[:processed] && !File.exist?(lockfile))
+        FileUtils.touch lockfile
         Resque.enqueue(DerivativeGenerator, dir)
       end
       render json: status

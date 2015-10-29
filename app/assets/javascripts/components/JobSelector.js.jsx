@@ -88,9 +88,6 @@ var JobLink = React.createClass({
 
     buildDerivatives: function(e) {
         e.stopPropagation();
-        var newState = this.state;
-        newState.building = true;
-        this.setState(newState);
         $.ajax({
             type: 'PUT',
             url: this.getDerivUrl(),
@@ -105,12 +102,11 @@ var JobLink = React.createClass({
             e.stopPropagation();
         }
         jQuery.getJSON(this.getDerivUrl(), null, function (data) {
-            data.building = this.state.building;
             this.setState(data);
+            if (this.state.building) {
+                setTimeout(this.updateDerivativeStatus, 1000);
+            }
         }.bind(this));
-        if (this.state.building) {
-            setTimeout(this.updateDerivativeStatus, 1000);
-        }
     },
 
     render: function() {
@@ -126,7 +122,6 @@ var JobLink = React.createClass({
                 status = (
                     <span>
                         &nbsp;[derivatives: {this.state.processed} / {this.state.expected}]
-                        &nbsp;<a href="#" onClick={this.updateDerivativeStatus}>[refresh]</a>
                         {build}
                     </span>
                 );
