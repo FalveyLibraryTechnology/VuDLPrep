@@ -163,10 +163,50 @@ var PaginatorZoomy = React.createClass({
 });
 
 var PaginatorControls = React.createClass({
-    updateCurrentPageLabel: function() {
-        this.props.paginator.setLabel(
-            this.props.paginator.state.currentPage, $(this.refs.labelInput).val()
+    getLabel: function() {
+        return $(this.refs.labelInput).val();
+    },
+
+    setLabel: function(label) {
+        this.props.paginator.setLabel(this.props.paginator.state.currentPage, label);
+    },
+
+    setLabelPrefix: function(str) {
+        this.setLabel(
+            MagicLabeler.replaceLabelPart(this.getLabel(), 'prefix', str)
         );
+    },
+
+    setLabelBody: function(str) {
+        this.setLabel(
+            MagicLabeler.replaceLabelPart(this.getLabel(), 'label', str)
+        );
+    },
+
+    setLabelSuffix: function(str) {
+        this.setLabel(
+            MagicLabeler.replaceLabelPart(this.getLabel(), 'suffix', str)
+        );
+    },
+
+    toggleBrackets: function() {
+        this.setLabel(MagicLabeler.toggleBrackets(this.getLabel()));
+    },
+
+    toggleCase: function() {
+        this.setLabel(MagicLabeler.toggleCase(this.getLabel()));
+    },
+
+    toggleRoman: function() {
+        var label = MagicLabeler.toggleRoman(this.getLabel());
+        if (label === false) {
+            return alert("Roman numeral toggle not supported for this label.");
+        }
+        this.setLabel(label);
+    },
+
+    updateCurrentPageLabel: function() {
+        this.setLabel(this.getLabel());
     },
 
     render: function() {
@@ -182,13 +222,13 @@ var PaginatorControls = React.createClass({
                     <ZoomToggleButton paginator={this.props.paginator} />
                     <button className="primary" onClick={this.props.paginator.save}>Save</button>
                 </div>
-                <PaginatorControlGroup>{MagicLabeler.prefixes}</PaginatorControlGroup>
-                <PaginatorControlGroup>{MagicLabeler.labels}</PaginatorControlGroup>
-                <PaginatorControlGroup>{MagicLabeler.suffixes}</PaginatorControlGroup>
+                <PaginatorControlGroup callback={this.setLabelPrefix}>{MagicLabeler.prefixes}</PaginatorControlGroup>
+                <PaginatorControlGroup callback={this.setLabelBody}>{MagicLabeler.labels}</PaginatorControlGroup>
+                <PaginatorControlGroup callback={this.setLabelSuffix}>{MagicLabeler.suffixes}</PaginatorControlGroup>
                 <div className="toggles group">
-                    <button>Toggle []</button>
-                    <button>Toggle Case</button>
-                    <button>Toggle Roman Numerals</button>
+                    <button onClick={this.toggleBrackets}>Toggle []</button>
+                    <button onClick={this.toggleCase}>Toggle Case</button>
+                    <button onClick={this.toggleRoman}>Toggle Roman Numerals</button>
                 </div>
                 <button onClick={this.props.paginator.autonumberFollowingPages}>Autonumber Following Pages</button>
             </div>
@@ -199,10 +239,13 @@ var PaginatorControls = React.createClass({
 var PaginatorControlGroup = React.createClass({
     render: function() {
         var buttons = this.props.children.map(function (item) {
+            var callback = function() {
+                this.props.callback(item);
+            }.bind(this);
             return (
-                <button key={item}>{item}</button>
+                <button onClick={callback} key={item}>{item}</button>
             );
-        });
+        }.bind(this));
         return (
             <div className="group">{buttons}</div>
         );

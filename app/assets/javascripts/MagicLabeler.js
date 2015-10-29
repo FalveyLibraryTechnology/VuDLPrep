@@ -94,5 +94,36 @@ var MagicLabeler = {
             suffix: suffix,
             brackets: brackets
         };
+    },
+
+    replaceLabelPart: function(label, part, replacement) {
+        var parts = this.parsePageLabel(label);
+        parts[part] = replacement;
+        return this.assemblePageLabel(parts);
+    },
+
+    toggleBrackets: function(text) {
+        var label = this.parsePageLabel(text);
+        label['brackets'] = !label['brackets'];
+        return this.assemblePageLabel(label);
+    },
+
+    toggleCase: function(label) {
+        return (label === label.toLowerCase())
+            ? label.toUpperCase() : label.toLowerCase();
+    },
+
+    toggleRoman: function(text) {
+        var label = this.parsePageLabel(text);
+        if (parseInt(label['label']) > 0) {
+            label['label'] = RomanNumerals.toRoman(label['label']);
+        } else {
+            try {
+                label['label'] = RomanNumerals.toArabic(label['label']);
+            } catch (e) {
+                return false;
+            }
+        }
+        return this.assemblePageLabel(label);
     }
 };
