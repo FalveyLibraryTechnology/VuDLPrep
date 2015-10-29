@@ -263,13 +263,20 @@ var PaginatorControlGroup = React.createClass({
 });
 
 var PaginatorList = React.createClass({
+    scrollTo: function(thumb) {
+        var listOffset =
+            this.refs.pageList.offsetTop +
+            (this.refs.thumb0.refs.wrapper.offsetTop - this.refs.pageList.offsetTop);
+        this.refs.pageList.scrollTop = thumb.offsetTop - listOffset;
+    },
+
     render: function() {
         var pages = [];
         for (var i = 0; i < this.props.pageCount; i++) {
-            pages[i] = <Thumbnail selected={i === this.props.paginator.state.currentPage} paginator={this.props.paginator} key={i} number={i} />;
+            pages[i] = <Thumbnail ref={"thumb" + i} list={this} selected={i === this.props.paginator.state.currentPage} paginator={this.props.paginator} key={i} number={i} />;
         };
         return (
-            <div className="pageList">{pages}</div>
+            <div ref="pageList" className="pageList">{pages}</div>
         );
     }
 });
@@ -279,6 +286,12 @@ var Thumbnail = React.createClass({
         this.props.paginator.setPage(this.props.number);
     },
 
+    componentDidUpdate: function() {
+        if (this.props.selected) {
+            this.props.list.scrollTo(this.refs.wrapper);
+        }
+    },
+
     render: function() {
         var label = this.props.paginator.getLabel(this.props.number);
         // check for magic labels:
@@ -286,7 +299,7 @@ var Thumbnail = React.createClass({
             (null === this.props.paginator.getLabel(this.props.number, false) ? ' magic' : '');
         var myClass = 'thumbnail' + (this.props.selected ? ' selected' : '');
         return (
-            <div onClick={this.selectPage} className={myClass}>
+            <div onClick={this.selectPage} className={myClass} ref="wrapper">
                 <img src={this.props.paginator.getImageUrl(this.props.number, 'thumb')} />
                 <div className="number">{this.props.number + 1}</div>
                 <div className={labelClass}>{label}</div>
