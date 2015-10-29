@@ -1,5 +1,9 @@
 var JobPaginator = React.createClass({
-    getImageUrl: function(filename, size) {
+    getImageUrl: function(imageNumber, size) {
+        if (typeof this.state.order[imageNumber] === 'undefined') {
+            return false;
+        }
+        filename = this.state.order[imageNumber].filename;
         return VuDLPrepUtils.getImageUrl(this.state.category, this.state.job, filename, size);
     },
 
@@ -34,7 +38,7 @@ var JobPaginator = React.createClass({
             <div className={this.state.active ? '' : 'hidden'} id="paginator">
                 <div className="row">
                     <div className="six col">
-                        <PaginatorPreview />
+                        <PaginatorPreview img={this.getImageUrl(this.state.currentPage, 'medium')} />
                         <PaginatorZoomy />
                     </div>
                     <div className="six col">
@@ -49,8 +53,13 @@ var JobPaginator = React.createClass({
 
 var PaginatorPreview = React.createClass({
     render: function() {
+        var img = this.props.img
+            ? <img src={this.props.img} />
+            : '';
         return (
-            <div>Coming soon</div>
+            <div className="preview">
+                {img}
+            </div>
         );
     }
 });
@@ -128,7 +137,7 @@ var Thumbnail = React.createClass({
     render: function() {
         return (
             <div className="thumbnail">
-                <img src={this.props.paginator.getImageUrl(this.props.children.filename, 'thumb')} />
+                <img src={this.props.paginator.getImageUrl(this.props.number, 'thumb')} />
                 <div className="number">{this.props.number + 1}</div>
                 <div className="label">{this.props.children.label}</div>
             </div>
