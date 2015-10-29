@@ -1,46 +1,4 @@
 var VuDLPrepUtils = {
-    saveMagicLabels: function() {
-        for (var i = 0; i < this.currentPageOrder.length; i++) {
-            if (null === this.currentPageOrder[i]['label']) {
-                this.currentPageOrder[i]['label'] = this.getMagicPageLabel(i);
-            }
-        }
-    },
-
-    confirmSavedMagicLabels: function(count) {
-        var msg = "You will be saving " + count + " unreviewed, auto-generated"
-            + " label(s). Are you sure?";
-        return confirm(msg);
-    },
-
-    savePagination: function() {
-        this.updateCurrentPageLabel();
-        var count = this.countMagicLabels(0);
-        if (count > 0 && !this.confirmSavedMagicLabels(count)) {
-            return;
-        }
-        this.saveMagicLabels();
-        var that = this;
-        $.ajax({
-            type: 'PUT',
-            url: this.getJobUrl(this.currentCategory, this.currentJob, ''),
-            contentType: 'application/json',
-            data: JSON.stringify({ order: this.currentPageOrder }),
-            success: function() { alert('Success!'); that.activateJobSelector(); },
-            error: function() { alert('Unable to save!'); }
-        });
-    },
-
-    recalculateMagicLabels: function() {
-        for (var i = 0; i < this.currentPageOrder.length; i++) {
-            if (null === this.currentPageOrder[i]['label']) {
-                var label = $('<i></i>');
-                label.text(this.getMagicPageLabel(i))
-                this.thumbnails[i].find('.label').empty().append(label);
-            }
-        }
-    },
-
     setPagePrefix: function(text) {
         var label = this.parsePageLabel(this.pageInput.val());
         label['prefix'] = (label['prefix'] == text) ? '' : text;

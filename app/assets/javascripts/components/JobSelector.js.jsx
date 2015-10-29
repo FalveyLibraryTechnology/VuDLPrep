@@ -9,6 +9,12 @@ var JobSelector = React.createClass({
         this.setState(newState);
     },
 
+    show: function() {
+        var newState = this.state;
+        newState.active = true;
+        this.setState(newState);
+    },
+
     componentDidMount: function() {
         jQuery.getJSON(this.props.url, null, function (data) {
             this.setState({active: true, data: data});

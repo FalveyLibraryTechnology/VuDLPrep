@@ -78,8 +78,34 @@ var JobPaginator = React.createClass({
         this.setPage(this.state.currentPage - 1);
     },
 
+    saveMagicLabels: function() {
+        for (var i = 0; i < this.state.order.length; i++) {
+            if (null === this.getLabel(i, false)) {
+                this.setLabel(i, this.getLabel(i));
+            }
+        }
+    },
+
+    confirmSavedMagicLabels: function(count) {
+        var msg = "You will be saving " + count + " unreviewed, auto-generated"
+            + " label(s). Are you sure?";
+        return confirm(msg);
+    },
+
     save: function() {
-        alert('save');
+        var count = this.countMagicLabels(0);
+        if (count > 0 && !this.confirmSavedMagicLabels(count)) {
+            return;
+        }
+        this.saveMagicLabels();
+        $.ajax({
+            type: 'PUT',
+            url: this.props.app.getJobUrl(this.state.category, this.state.job, ''),
+            contentType: 'application/json',
+            data: JSON.stringify({ order: this.state.order }),
+            success: function() { alert('Success!'); this.props.app.activateJobSelector(); }.bind(this),
+            error: function() { alert('Unable to save!'); }
+        });
     },
 
     toggleZoom: function() {

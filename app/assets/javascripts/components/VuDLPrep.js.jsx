@@ -3,6 +3,11 @@ var VuDLPrep = React.createClass({
         VuDLPrepUtils.url = this.props.url;
     },
 
+    activateJobSelector: function() {
+        this.refs.paginator.setState(this.refs.paginator.getInitialState());
+        this.refs.selector.show();
+    },
+
     getImageUrl: function(category, job, filename, size) {
         return this.getJobUrl(
             category, job,
