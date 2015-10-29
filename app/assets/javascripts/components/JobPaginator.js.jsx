@@ -21,12 +21,20 @@ var JobPaginator = React.createClass({
         }.bind(this));
     },
 
+    setPage: function(p) {
+        if (p >= 0 && p < this.state.order.length) {
+            var newState = this.state;
+            newState.currentPage = p;
+            this.setState(newState);
+        }
+    },
+
     nextPage: function() {
-        alert('next');
+        this.setPage(this.state.currentPage + 1);
     },
 
     prevPage: function() {
-        alert('prev');
+        this.setPage(this.state.currentPage - 1);
     },
 
     save: function() {
@@ -130,7 +138,7 @@ var PaginatorList = React.createClass({
     render: function() {
         var pages = this.props.children.map(function (page, i) {
             return (
-                <Thumbnail paginator={this.props.paginator} key={i} number={i}>{page}</Thumbnail>
+                <Thumbnail selected={i === this.props.paginator.state.currentPage} paginator={this.props.paginator} key={i} number={i}>{page}</Thumbnail>
             );
         }.bind(this));
         return (
@@ -140,9 +148,14 @@ var PaginatorList = React.createClass({
 });
 
 var Thumbnail = React.createClass({
+    selectPage: function() {
+        this.props.paginator.setPage(this.props.number);
+    },
+
     render: function() {
+        var myClass = 'thumbnail' + (this.props.selected ? ' selected' : '');
         return (
-            <div className="thumbnail">
+            <div onClick={this.selectPage} className={myClass}>
                 <img src={this.props.paginator.getImageUrl(this.props.number, 'thumb')} />
                 <div className="number">{this.props.number + 1}</div>
                 <div className="label">{this.props.children.label}</div>
