@@ -1,8 +1,4 @@
 var VuDLPrep = React.createClass({
-    componentDidMount: function() {
-        VuDLPrepUtils.url = this.props.url;
-    },
-
     activateJobSelector: function() {
         this.refs.paginator.setState(this.refs.paginator.getInitialState());
         this.refs.selector.show();
