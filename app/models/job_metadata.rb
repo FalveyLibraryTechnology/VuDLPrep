@@ -40,6 +40,17 @@ class JobMetadata
     status
   end
 
+  def upload_time
+    time = Time.new(2000);
+    order.pages.each do |page|
+      current = File.mtime("#{@job.dir}/#{page.filename}")
+      if (current > time)
+        time = current
+      end
+    end
+    time
+  end
+
   def order
     @order ||= PageOrder.from_job(@job)
   end
@@ -48,5 +59,12 @@ class JobMetadata
     File.open(@filename, 'w') do |file|
       file.write raw.to_json
     end
+  end
+
+  def status
+    {
+      derivatives: derivative_status,
+      minutes_since_upload: ((Time.new - upload_time) / 60).floor
+    }
   end
 end

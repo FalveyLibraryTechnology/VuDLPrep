@@ -69,7 +69,7 @@ var Job = React.createClass({
 
 var JobLink = React.createClass({
     getInitialState: function() {
-        return {building: false};
+        return {};
     },
 
     componentDidMount: function() {
@@ -83,6 +83,12 @@ var JobLink = React.createClass({
     getDerivUrl: function() {
         return this.props.app.getJobUrl(
             this.props.category, this.props.children, '/derivatives'
+        );
+    },
+
+    getStatusUrl: function() {
+        return this.props.app.getJobUrl(
+            this.props.category, this.props.children, '/status'
         );
     },
 
@@ -101,9 +107,9 @@ var JobLink = React.createClass({
         if (typeof e !== 'undefined') {
             e.stopPropagation();
         }
-        jQuery.getJSON(this.getDerivUrl(), null, function (data) {
+        jQuery.getJSON(this.getStatusUrl(), null, function (data) {
             this.setState(data);
-            if (this.state.building) {
+            if (this.state.derivatives.building) {
                 setTimeout(this.updateDerivativeStatus, 1000);
             }
         }.bind(this));
@@ -111,25 +117,36 @@ var JobLink = React.createClass({
 
     render: function() {
         var status = <span> [loading...]</span>;
-        if (typeof this.state.expected !== 'undefined') {
-            if (this.state.expected === this.state.processed) {
+        var clickable = false;
+        if (typeof this.state.derivatives !== 'undefined') {
+            if (this.state.derivatives.expected === 0) {
+                status = <span> [empty job]</span>;
+            } else if (this.state.minutes_since_upload < 10) {
+                var minutes = 10 - this.state.minutes_since_upload;
+                status = <span> [recently uploaded; please wait {minutes} minute{minutes > 1 ? 's' : ''}]</span>
+            } else if (this.state.derivatives.expected === this.state.derivatives.processed) {
                 status = <span> [ready]</span>;
+                clickable = true;
             } else {
                 var build = '';
-                if (!this.state.building) {
+                if (!this.state.derivatives.building) {
                     build = <span> <a href="#" onClick={this.buildDerivatives}>[build]</a></span>
                 }
                 status = (
                     <span>
-                        &nbsp;[derivatives: {this.state.processed} / {this.state.expected}]
+                        &nbsp;[derivatives: {this.state.derivatives.processed} / {this.state.derivatives.expected}]
                         {build}
                     </span>
                 );
+                clickable = true;
             }
         }
+        var link = clickable
+            ? <a onClick={this.handleClick} href="#">{this.props.children}</a>
+            : <span>{this.props.children}</span>;
         return (
             <span>
-                <a onClick={this.handleClick} href="#">{this.props.children}</a>
+                {link}
                 {status}
             </span>
         );
