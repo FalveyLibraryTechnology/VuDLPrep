@@ -4,7 +4,12 @@ class ApplicationController < ActionController::Base
   protect_from_forgery with: :null_session
 
   def holding_path
-    "/usr/local/holding"
+    config = Rails.application.config_for(:vudl)
+    if (config["holding_area_path"])
+      config["holding_area_path"]
+    else
+      "/usr/local/holding"
+    end
   end
 
   def category_path(params)

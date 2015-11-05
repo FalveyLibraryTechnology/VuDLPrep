@@ -1,0 +1,14 @@
+defaults: &defaults
+  # Base path where incoming files are stored; this must contain two levels
+  # of subdirectories, the first representing categories and the second
+  # representing jobs within those categories.
+  holding_area_path: /usr/local/holding
+
+development:
+  <<: *defaults
+
+test:
+  <<: *defaults
+
+production:
+  <<: *defaults
