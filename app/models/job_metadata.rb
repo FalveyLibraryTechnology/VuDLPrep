@@ -14,12 +14,14 @@ class JobMetadata
 
   def raw
     {
-      order: order.raw
+      order: order.raw,
+      published: published
     }
   end
 
   def raw=(data)
     @order = PageOrder.from_raw(data["order"])
+    @published = data["published"] === true
   end
 
   def derivative_lockfile
@@ -55,6 +57,10 @@ class JobMetadata
     @order ||= PageOrder.from_job(@job)
   end
 
+  def published
+    @published ||= false
+  end
+
   def save
     File.open(@filename, 'w') do |file|
       file.write raw.to_json
@@ -64,7 +70,8 @@ class JobMetadata
   def status
     {
       derivatives: derivative_status,
-      minutes_since_upload: ((Time.new - upload_time) / 60).floor
+      minutes_since_upload: ((Time.new - upload_time) / 60).floor,
+      published: raw[:published]
     }
   end
 end

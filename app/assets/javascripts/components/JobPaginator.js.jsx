@@ -92,17 +92,24 @@ var JobPaginator = React.createClass({
         return confirm(msg);
     },
 
-    save: function() {
+    save: function(publish) {
         var count = this.countMagicLabels(0);
         if (count > 0 && !this.confirmSavedMagicLabels(count)) {
             return;
         }
         this.saveMagicLabels();
+        if (publish) {
+            msg = "Are you sure you wish to publish this job? You will not be able"
+                + " to make any further edits."
+            if (!confirm(msg)) {
+                return;
+            }
+        }
         $.ajax({
             type: 'PUT',
             url: this.props.app.getJobUrl(this.state.category, this.state.job, ''),
             contentType: 'application/json',
-            data: JSON.stringify({ order: this.state.order }),
+            data: JSON.stringify({ order: this.state.order, published: publish }),
             success: function() { alert('Success!'); this.props.app.activateJobSelector(); }.bind(this),
             error: function() { alert('Unable to save!'); }
         });
@@ -230,7 +237,8 @@ var PaginatorControls = React.createClass({
                 </div>
                 <div className="top">
                     <ZoomToggleButton paginator={this.props.paginator} />
-                    <button className="primary" onClick={this.props.paginator.save}>Save</button>
+                    <button className="primary" onClick={function() { this.props.paginator.save(false); }.bind(this)}>Save</button>
+                    <button className="primary" onClick={function() { this.props.paginator.save(true); }.bind(this)}>Save and Publish</button>
                 </div>
                 <PaginatorControlGroup callback={this.setLabelPrefix}>{MagicLabeler.prefixes}</PaginatorControlGroup>
                 <PaginatorControlGroup callback={this.setLabelBody}>{MagicLabeler.labels}</PaginatorControlGroup>

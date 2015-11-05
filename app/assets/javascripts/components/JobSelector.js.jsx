@@ -10,9 +10,8 @@ var JobSelector = React.createClass({
     },
 
     show: function() {
-        var newState = this.state;
-        newState.active = true;
-        this.setState(newState);
+        this.setState(this.getInitialState());
+        this.componentDidMount();
     },
 
     componentDidMount: function() {
@@ -124,6 +123,8 @@ var JobLink = React.createClass({
             } else if (this.state.minutes_since_upload < 10) {
                 var minutes = 10 - this.state.minutes_since_upload;
                 status = <span> [recently uploaded; please wait {minutes} minute{minutes > 1 ? 's' : ''}]</span>
+            } else if (this.state.published) {
+                status = <span> [published; cannot be edited]</span>
             } else if (this.state.derivatives.expected === this.state.derivatives.processed) {
                 status = <span> [ready]</span>;
                 clickable = true;
