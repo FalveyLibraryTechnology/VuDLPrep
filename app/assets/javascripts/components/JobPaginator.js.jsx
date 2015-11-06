@@ -7,6 +7,10 @@ var JobPaginator = React.createClass({
         return this.props.app.getImageUrl(this.state.category, this.state.job, filename, size);
     },
 
+    getStatusUrl: function() {
+        return this.props.app.getJobUrl(this.state.category, this.state.job, '/status');
+    },
+
     getLabel: function(imageNumber, useMagic) {
         useMagic = (typeof useMagic === 'undefined') ? true : useMagic;
         var label = (typeof this.state.order[imageNumber] === 'undefined')
@@ -98,21 +102,41 @@ var JobPaginator = React.createClass({
             return;
         }
         this.saveMagicLabels();
-        if (publish) {
-            msg = "Are you sure you wish to publish this job? You will not be able"
-                + " to make any further edits."
-            if (!confirm(msg)) {
-                return;
+        var promise = new Promise(function(resolve, reject) {
+            // If the user wants to publish, let's make sure all derivatives are
+            // ready! Otherwise we can resolve with no further actions.
+            if (publish) {
+                jQuery.getJSON(this.getStatusUrl(), null, function (data) {
+                    resolve(data);
+                }.bind(this));
+            } else {
+                resolve(null);
             }
-        }
-        $.ajax({
-            type: 'PUT',
-            url: this.props.app.getJobUrl(this.state.category, this.state.job, ''),
-            contentType: 'application/json',
-            data: JSON.stringify({ order: this.state.order, published: publish }),
-            success: function() { alert('Success!'); this.props.app.activateJobSelector(); }.bind(this),
-            error: function() { alert('Unable to save!'); }
-        });
+        }.bind(this));
+        promise.then(function(data) {
+            if (publish) {
+                if (data.derivatives.expected > data.derivatives.processed) {
+                    var msg = "Derivative images have not been generated yet. Please"
+                        + " go back to the main menu and hit the \"build\" button"
+                        + " for this job before publishing it.";
+                    alert(msg);
+                    return;
+                }
+                var msg = "Are you sure you wish to publish this job? You will not be able"
+                    + " to make any further edits."
+                if (!confirm(msg)) {
+                    return;
+                }
+            }
+            $.ajax({
+                type: 'PUT',
+                url: this.props.app.getJobUrl(this.state.category, this.state.job, ''),
+                contentType: 'application/json',
+                data: JSON.stringify({ order: this.state.order, published: publish }),
+                success: function() { alert('Success!'); this.props.app.activateJobSelector(); }.bind(this),
+                error: function() { alert('Unable to save!'); }
+            });
+        }.bind(this));
     },
 
     toggleZoom: function() {
