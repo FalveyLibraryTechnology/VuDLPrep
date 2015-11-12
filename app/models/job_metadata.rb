@@ -45,12 +45,28 @@ class JobMetadata
   def upload_time
     time = Time.new(2000);
     order.pages.each do |page|
-      current = File.mtime("#{@job.dir}/#{page.filename}")
-      if (current > time)
-        time = current
+      current_file = "#{@job.dir}/#{page.filename}"
+      if File.exist?(current_file)
+        current = File.mtime(current_file)
+        if (current > time)
+          time = current
+        end
       end
     end
     time
+  end
+
+  def file_problems
+    from_json = order.raw.map do |page|
+      page[:filename]
+    end
+    from_file = PageOrder.from_job(@job).raw.map do |page|
+      page[:filename]
+    end
+    {
+      deleted: from_json - from_file,
+      added: from_file - from_json
+    }
   end
 
   def order
@@ -71,6 +87,7 @@ class JobMetadata
     {
       derivatives: derivative_status,
       minutes_since_upload: ((Time.new - upload_time) / 60).floor,
+      file_problems: file_problems,
       published: raw[:published]
     }
   end
