@@ -204,9 +204,12 @@ var PaginatorZoomy = React.createClass({
 });
 
 var PaginatorControls = React.createClass({
-    getLabel: function() {
+    getLabel: function(useMagic) {
+        if (typeof useMagic === 'undefined') {
+            useMagic = true;
+        }
         var label = $(this.refs.labelInput).val();
-        return (label.length == 0)
+        return (label.length == 0 && useMagic)
             ? this.props.paginator.getLabel(this.props.paginator.state.currentPage)
             : label;
     },
@@ -250,7 +253,7 @@ var PaginatorControls = React.createClass({
     },
 
     updateCurrentPageLabel: function() {
-        this.setLabel(this.getLabel());
+        this.setLabel(this.getLabel(false));
     },
 
     render: function() {
