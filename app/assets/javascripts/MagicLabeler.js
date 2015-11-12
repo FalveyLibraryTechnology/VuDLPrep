@@ -36,6 +36,9 @@ var MagicLabeler = {
 
             var numericLabel = this.adjustNumericLabel(priorLabel['label'], 1);
             if (false !== numericLabel) {
+                if (priorLabel['suffix'] == ', verso' && !skipRectoCheck) {
+                    priorLabel['suffix'] = ', recto';
+                }
                 priorLabel['label'] = numericLabel;
                 return this.assemblePageLabel(priorLabel);
             }
@@ -96,9 +99,13 @@ var MagicLabeler = {
         };
     },
 
-    replaceLabelPart: function(label, part, replacement) {
+    replaceLabelPart: function(label, part, replacement, allowToggle) {
+        if (typeof allowToggle === 'undefined') {
+            allowToggle = false;
+        }
         var parts = this.parsePageLabel(label);
-        parts[part] = replacement;
+        parts[part] = (parts[part] == replacement && allowToggle)
+            ? '' :  replacement;
         return this.assemblePageLabel(parts);
     },
 
