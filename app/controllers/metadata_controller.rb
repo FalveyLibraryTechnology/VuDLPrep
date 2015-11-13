@@ -48,6 +48,9 @@ class MetadataController < ApplicationController
       else
         job.metadata.raw = params
         job.metadata.save
+        if (params[:published])
+          Resque.enqueue(Fedora3Ingestor, job.dir)
+        end
         render json: { status: 'ok' }
       end
     end
