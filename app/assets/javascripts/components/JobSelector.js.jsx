@@ -73,14 +73,6 @@ var JobList = React.createClass({
 });
 
 var Job = React.createClass({
-    render: function() {
-        return (
-            <li><JobLink app={this.props.app} category={this.props.category} onJobSelect={this.props.onJobSelect}>{this.props.children}</JobLink></li>
-        );
-    }
-});
-
-var JobLink = React.createClass({
     getInitialState: function() {
         return {};
     },
@@ -160,10 +152,10 @@ var JobLink = React.createClass({
             ? <a onClick={this.handleClick} href="#">{this.props.children}</a>
             : <span>{this.props.children}</span>;
         return (
-            <span>
+            <li>
                 {link}
                 {status}
-            </span>
+            </li>
         );
     }
 });
