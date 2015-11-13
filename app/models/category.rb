@@ -12,6 +12,14 @@ class Category
     end
   end
 
+  def ini
+    IniFile.load("#{dir}/batch-params.ini")
+  end
+
+  def supports_ocr
+    ini['ocr']['ocr'] && ini['ocr']['ocr'].tr(" '\"", "") != "false"
+  end
+
   def raw
     {
       category: name,
@@ -19,5 +27,9 @@ class Category
         job.raw
       end
     }
+  end
+
+  def target_collection_id
+    ini['collection']['destination']
   end
 end
