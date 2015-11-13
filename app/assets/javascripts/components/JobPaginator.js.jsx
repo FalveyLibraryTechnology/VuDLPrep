@@ -63,7 +63,6 @@ var JobPaginator = React.createClass({
             });
         }.bind(this));
         promise.then(function(data) {
-            console.log(data);
             data.category = category;
             data.job = job;
             data.active = false;
