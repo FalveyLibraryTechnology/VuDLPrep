@@ -57,13 +57,84 @@ var JobPaginator = React.createClass({
     },
 
     loadJob: function(category, job) {
-        jQuery.getJSON(this.props.app.getJobUrl(category, job, ''), null, function (data, status) {
+        var promise = new Promise(function(resolve, reject) {
+            jQuery.getJSON(this.props.app.getJobUrl(category, job, ''), null, function (data, status) {
+                resolve(data);
+            });
+        }.bind(this));
+        promise.then(function(data) {
+            console.log(data);
             data.category = category;
             data.job = job;
-            data.active = true;
+            data.active = false;
             data.currentPage = 0;
             this.setState(data);
+            return new Promise(function(resolve, reject) {
+                jQuery.getJSON(this.getStatusUrl(), null, function (data) {
+                    resolve(data);
+                });
+            }.bind(this));
+        }.bind(this)).then(function(status) {
+            if (status.file_problems.deleted.length > 0
+                || status.file_problems.added.length > 0
+            ) {
+                var msg = '';
+                if (status.file_problems.deleted.length > 0) {
+                    msg += status.file_problems.deleted.length
+                        + " file(s) have been added to the job since the last edit.\n"
+                    this.removePages(status.file_problems.deleted);
+                }
+                if (status.file_problems.added.length > 0) {
+                    msg += status.file_problems.added.length
+                        + " file(s) have been removed from the job since the last edit.\n"
+                    this.addPages(status.file_problems.added);
+                }
+                alert(msg);
+            }
+            var newState = this.state;
+            newState.active = true;
+            this.setState(newState);
         }.bind(this));
+    },
+
+    findNewPagePosition: function(page, list) {
+        for (var i = 0; i < list.length; i++) {
+            if (list[i].filename >= page) {
+                return i;
+            }
+        }
+        return i;
+    },
+
+    addPages: function(pages) {
+        var newState = this.state;
+        for (var i = 0; i < pages.length; i++) {
+            newState.order.splice(
+                this.findNewPagePosition(pages[i], newState.order),
+                0,
+                {filename: pages[i], label: null}
+            );
+        }
+        this.setState(newState);
+    },
+
+    removePages: function(pages) {
+        var newOrder = [];
+        for (var i = 0; i < this.state.order.length; i++) {
+            var include = true;
+            for (var j = 0; j < pages.length; j++) {
+                if (this.state.order[i].filename == pages[j]) {
+                    include = false;
+                    break;
+                }
+            }
+            if (include) {
+                newOrder[newOrder.length] = this.state.order[i];
+            }
+        }
+        var newState = this.state;
+        newState.order = newOrder;
+        this.setState(newState);
     },
 
     setPage: function(p) {

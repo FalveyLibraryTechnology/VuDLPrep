@@ -20,7 +20,7 @@ class JobMetadata
   end
 
   def raw=(data)
-    @order = PageOrder.from_raw(data["order"])
+    self.order = data["order"]
     @published = data["published"] === true
   end
 
@@ -71,6 +71,10 @@ class JobMetadata
 
   def order
     @order ||= PageOrder.from_job(@job)
+  end
+
+  def order=(data)
+    @order = PageOrder.from_raw(data)
   end
 
   def published

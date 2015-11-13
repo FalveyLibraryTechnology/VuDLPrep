@@ -7,9 +7,8 @@ class JobMetadataValidator
   end
 
   def self.order_valid?(job, order)
-    old = job.metadata.order.raw.map { |entry| entry[:filename]}
-    new = order.map { |entry| entry[:filename] }
-    diff = old - new
-    (diff.empty? && old.length == new.length)
+    job.metadata.order = order
+    problems = job.metadata.status[:file_problems]
+    (problems[:deleted].empty? && problems[:added].empty?)
   end
 end
