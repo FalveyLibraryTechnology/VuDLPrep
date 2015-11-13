@@ -1,4 +1,6 @@
 var JobPaginator = React.createClass({
+    magicLabelCache: [],
+
     getImageUrl: function(imageNumber, size) {
         if (typeof this.state.order[imageNumber] === 'undefined') {
             return false;
@@ -15,11 +17,17 @@ var JobPaginator = React.createClass({
         useMagic = (typeof useMagic === 'undefined') ? true : useMagic;
         var label = (typeof this.state.order[imageNumber] === 'undefined')
             ? null : this.state.order[imageNumber]['label'];
-        return (useMagic && null === label)
-            ? MagicLabeler.getLabel(imageNumber, this.getLabel) : label;
+        if (useMagic && null === label) {
+            if (typeof this.magicLabelCache[imageNumber] === 'undefined') {
+                this.magicLabelCache[imageNumber] = MagicLabeler.getLabel(imageNumber, this.getLabel);
+            }
+            return this.magicLabelCache[imageNumber];
+        }
+        return label;
     },
 
     setLabel: function(imageNumber, text) {
+        this.magicLabelCache = [];  // clear label cache whenever there is a change
         var newState = this.state;
         if (text !== null && text.length == 0) {
             text = null;
