@@ -1,4 +1,12 @@
 defaults: &defaults
+  # Credentials for connecting to a Fedora 3 / Solr GSearch backend:
+  fedora3_host: http://myserver:8088
+  fedora3_api: http://myserver:8088/fedora
+  fedora3_username: username
+  fedora3_password: password
+  fedora3_solr_host: http://myserver:8080
+  fedora3_pid_namespace: vudl
+
   # Base path where incoming files are stored; this must contain two levels
   # of subdirectories, the first representing categories and the second
   # representing jobs within those categories.

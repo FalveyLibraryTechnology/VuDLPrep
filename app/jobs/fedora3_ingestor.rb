@@ -7,11 +7,16 @@ class Fedora3Ingestor
 
     logger = Logger.new(dir + '/ingest.log')
     logger.info "Beginning ingest."
-    if (category.supports_ocr)
-      logger.info "OCR supported"
+
+    holding_area = Fedora3Object.from_pid(category.target_collection_id)
+    rels = Fedora3Relsext.new(holding_area.datastream_dissemination('RELS-EXT'))
+    if (rels.sort == "custom")
+      raise "TODO: implement custom sort support."
     else
-      logger.info "OCR not supported"
+      member_position = 0
     end
-    logger.info "Target collection #{category.target_collection_id}"
+
+    resource = Fedora3Object.from_next_pid
+    logger.info resource.pid
   end
 end
