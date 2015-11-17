@@ -5,6 +5,8 @@ class Image
 
   attr_accessor :sizes
 
+  attr_reader :filename
+
   def initialize(filename)
     @filename = filename
     @sizes = {

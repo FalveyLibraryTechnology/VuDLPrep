@@ -12,11 +12,27 @@ class Fedora3Ingestor
     @logger = Logger.new(dir + '/ingest.log')
   end
 
+  def add_datastreams_to_page(page, image_data)
+    image = Image.new("#{@job.dir}/#{page.filename}")
+    @logger.info "Ingesting MASTER datastream"
+    image_data.add_image_datastream image.filename, 'MASTER', 'image/tiff'
+    @logger.info "Ingesting MASTER metadata"
+    image_data.add_master_metadata_datastream
+    image.sizes.keys.each do |size|
+      @logger.info "Ingesting #{size} datastream"
+      image_data.add_image_datastream image.derivative(size), size, 'image/jpeg'
+    end
+    if (@category.supports_ocr)
+      @logger.info "TODO: OCR support"
+    end
+  end
+
   def add_pages(page_list)
-    order = @job.metadata.order.raw
+    order = @job.metadata.order.pages
     order.each_with_index do |page, i|
-      @logger.info "Adding #{i+1} of #{order.length} - #{page[:filename]}"
-      page = build_page page_list, page, i+1
+      @logger.info "Adding #{i+1} of #{order.length} - #{page.filename}"
+      image_data = build_page page_list, page, i+1
+      add_datastreams_to_page page, image_data
     end
   end
 
@@ -24,7 +40,7 @@ class Fedora3Ingestor
     image_data = Fedora3Object.from_next_pid
     image_data.parent_pid = page_list.pid
     image_data.model_type = 'ImageData'
-    image_data.title = page[:label]
+    image_data.title = page.label
     @logger.info "Creating Image Object #{image_data.pid}"
 
     image_data.core_ingest('I')

@@ -40,6 +40,42 @@ class Fedora3Object
     response = do_post(uri, data, mime_type)
   end
 
+  def add_image_datastream(filename, stream, mime_type)
+    add_datastream(
+      stream,
+      'M',
+      nil,
+      nil,
+      "#{self.pid.tr(':', '_')}_#{stream}",
+      'false',
+      'A',
+      nil,
+      'MD5',
+      nil,
+      mime_type,
+      "Initial Ingest addDatastream - #{stream}",
+      File.open(filename, 'rb').read
+    )
+  end
+
+  def add_master_metadata_datastream
+    add_datastream(
+      'MASTER-MD',
+      'M',
+      nil,
+      nil,
+      "#{self.pid.tr(':', '_')}_MASTER-MD",
+      'false',
+      'A',
+      nil,
+      'DISABLED',
+      nil,
+      'text/xml',
+      'Initial Ingest addDatastream - MASTER-MD',
+      fits_master_metadata
+    )
+  end
+
   def add_relationship(subject, predicate, object, is_literal, datatype)
     log "Adding relationship #{subject} #{predicate} #{object} to #{pid}"
     uri = URI("#{api_base}/objects/#{pid}/relationships/new")
@@ -205,9 +241,18 @@ class Fedora3Object
   def datastream_dissemination(datastream, as_of_data_time = nil, download = nil)
     uri = URI("#{api_base}/objects/#{pid}/datastreams/#{datastream}/content")
     params = { :asOfDataTime => as_of_data_time, :download => download }
-    uri.query = URI.encode_www_form(params)
-    response = Net::HTTP.get_response(uri)
-    response.body
+    do_get uri, params
+  end
+
+  def fits_master_metadata
+    uri = URI(fits_base)
+    master_content_url = "#{api_base}/objects/#{pid}/datastreams/MASTER/content"
+    params = { :url => master_content_url, :resultFormat => nil }
+    do_get uri, params
+  end
+
+  def fits_base
+    "#{@config['fedora3_host']}/fits/fits"
   end
 
   def image_data_ingest
@@ -260,7 +305,7 @@ class Fedora3Object
     response = do_post(uri)
     xml = REXML::Document.new(response.body)
     ns = { 'management' => 'http://www.fedora.info/definitions/1/0/management/' }
-    REXML::XPath.first(xml, "//management:pid[1]/text()", ns)
+    REXML::XPath.first(xml, "//management:pid[1]/text()", ns).to_s
   end
 
   def resource_collection_ingest(raw_resource = nil, license_str = nil, agents = nil, process_md = nil)
@@ -297,14 +342,11 @@ class Fedora3Object
     end
   end
 
-  def do_post(uri, body = nil, mime = nil)
-    req = Net::HTTP::Post.new(uri)
-    do_http(req, uri, body, mime)
-  end
-
-  def do_put(uri, body = nil, mime = nil)
-    req = Net::HTTP::Put.new(uri)
-    do_http(req, uri, body, mime)
+  def do_get(uri, params)
+    uri.query = URI.encode_www_form(params)
+    response = Net::HTTP.get_response(uri)
+    check_http_error response
+    response.body
   end
 
   def do_http(req, uri, body, mime)
@@ -316,6 +358,16 @@ class Fedora3Object
     response = Net::HTTP.new(uri.host, uri.port).start {|http| http.request(req)}
     check_http_error response
     response
+  end
+
+  def do_post(uri, body = nil, mime = nil)
+    req = Net::HTTP::Post.new(uri)
+    do_http(req, uri, body, mime)
+  end
+
+  def do_put(uri, body = nil, mime = nil)
+    req = Net::HTTP::Put.new(uri)
+    do_http(req, uri, body, mime)
   end
 
   def log(msg)
