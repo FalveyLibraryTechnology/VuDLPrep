@@ -37,7 +37,6 @@ class Fedora3Object
       logMessage: log_message
     }
     uri.query = URI.encode_www_form(params.compact)
-    log uri
     response = do_post(uri, data, mime_type)
   end
 
@@ -55,6 +54,26 @@ class Fedora3Object
     response = do_post(uri)
   end
 
+  def add_model_relationship(model)
+    add_relationship(
+      "info:fedora/#{pid}",
+      'info:fedora/fedora-system:def/model#hasModel',
+      "info:fedora/vudl-system:#{model}",
+      'false',
+      nil
+    )
+  end
+
+  def add_sort_relationship(sort)
+    add_relationship(
+      "info:fedora/#{pid}",
+      'http://vudl.org/relationships#sortOn',
+      sort,
+      'true',
+      nil
+    )
+  end
+
   def api_base
     @config["fedora3_api"]
   end
@@ -69,13 +88,7 @@ class Fedora3Object
 
   def collection_ingest
     log "Collection ingest for #{pid}"
-    add_relationship(
-      "info:fedora/#{pid}",
-      'info:fedora/fedora-system:def/model#hasModel',
-      'info:fedora/vudl-system:CollectionModel',
-      'false',
-      nil
-    )
+    add_model_relationship 'CollectionModel'
     add_datastream(
       'MEMBER-QUERY',
       'E',
@@ -120,13 +133,7 @@ class Fedora3Object
       'false'
     )
     modify_object(nil, nil, object_state, 'Set initial state', nil)
-    add_relationship(
-      "info:fedora/#{pid}",
-      'info:fedora/fedora-system:def/model#hasModel',
-      'info:fedora/vudl-system:CoreModel',
-      'false',
-      nil
-    )
+    add_model_relationship 'CoreModel'
     add_relationship(
       "info:fedora/#{pid}",
       'info:fedora/fedora-system:def/relations-external#isMemberOf',
@@ -239,7 +246,12 @@ class Fedora3Object
     uri = URI("#{api_base}/objects/#{target_pid}")
     uri.query = URI.encode_www_form(params.compact)
     response = do_post(uri, xml, 'text/xml')
- end
+  end
+
+  def list_collection_ingest
+    add_model_relationship 'ListCollection'
+    add_sort_relationship 'custom'
+  end
 
   def log(msg)
     if (logger)
@@ -276,20 +288,8 @@ class Fedora3Object
 
   def resource_collection_ingest(raw_resource = nil, license_str = nil, agents = nil, process_md = nil)
     log "Resource collection ingest for #{pid}"
-    add_relationship(
-      "info:fedora/#{pid}",
-      'info:fedora/fedora-system:def/model#hasModel',
-      'info:fedora/vudl-system:ResourceCollection',
-      'false',
-      nil
-    )
-    add_relationship(
-      "info:fedora/#{pid}",
-      'http://vudl.org/relationships#sortOn',
-      'title',
-      'true',
-      nil
-    )
+    add_model_relationship 'ResourceCollection'
+    add_sort_relationship 'title'
     if (raw_resource)
       raise "TODO: support raw_resource parameter"
     end

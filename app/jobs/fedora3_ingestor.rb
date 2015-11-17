@@ -30,7 +30,18 @@ class Fedora3Ingestor
     if (member_position > 0)
       raise "TODO: deal with ordered collection sequence numbers"
     end
-  
+
+    page_list = Fedora3Object.from_next_pid
+    page_list.logger = logger
+    page_list.parent_pid = resource.pid
+    page_list.model_type = "ListCollection"
+    page_list.title = "Page List"
+    logger.info "Creating Page List Object #{resource.pid}"
+
+    page_list.core_ingest("I")
+    page_list.collection_ingest
+    page_list.list_collection_ingest
+
     logger.info "Done."
   end
 end
