@@ -64,6 +64,16 @@ class Fedora3Object
     )
   end
 
+  def add_sequence_relationship(parent_pid, position)
+    add_relationship(
+      "info:fedora/#{pid}",
+      'http://vudl.org/relationships#sequence',
+      "#{parent_pid}##{position}",
+      'true',
+      nil
+    )
+  end
+
   def add_sort_relationship(sort)
     add_relationship(
       "info:fedora/#{pid}",
@@ -129,7 +139,7 @@ class Fedora3Object
       'UTF-8',
       namespace,
       'diglibEditor',
-      title + ' - ingest',
+      "#{title} - ingest",
       'false'
     )
     modify_object(nil, nil, object_state, 'Set initial state', nil)
@@ -188,6 +198,10 @@ class Fedora3Object
     )
   end
 
+  def data_ingest
+    add_model_relationship 'DataModel'
+  end
+
   def datastream_dissemination(datastream, as_of_data_time = nil, download = nil)
     uri = URI("#{api_base}/objects/#{pid}/datastreams/#{datastream}/content")
     params = { :asOfDataTime => as_of_data_time, :download => download }
@@ -196,39 +210,8 @@ class Fedora3Object
     response.body
   end
 
-  def do_post(uri, body = nil, mime = nil)
-    req = Net::HTTP::Post.new(uri)
-    do_http(req, uri, body, mime)
-  end
-
-  def do_put(uri, body = nil, mime = nil)
-    req = Net::HTTP::Put.new(uri)
-    do_http(req, uri, body, mime)
-  end
-
-  def do_http(req, uri, body, mime)
-    req.basic_auth api_username, api_password
-    req.body = body
-    if (mime)
-      req.add_field('Content-Type', mime)
-    end
-    response = Net::HTTP.new(uri.host, uri.port).start {|http| http.request(req)}
-    check_http_error response
-    response
-  end
-
-  def check_http_error(response)
-    error = false
-    if (!response)
-      error = "No response to POST"
-    end
-    if (response && response.code[0] != "2")
-      error = "Unexpected response: #{response.code} #{response.message} #{response.body}"
-    end
-    if (error)
-      log error
-      raise error
-    end
+  def image_data_ingest
+    add_model_relationship 'ImageData'
   end
 
   def ingest(label, format, encoding, namespace, owner_id, log_message, ignore_mime, xml = nil)
@@ -251,12 +234,6 @@ class Fedora3Object
   def list_collection_ingest
     add_model_relationship 'ListCollection'
     add_sort_relationship 'custom'
-  end
-
-  def log(msg)
-    if (logger)
-      logger.info msg
-    end
   end
 
   def modify_object(label, owner_id, state, log_message, last_modified_date)
@@ -301,6 +278,49 @@ class Fedora3Object
     end
     if (process_md)
       raise "TODO: support process_md parameter"
+    end
+  end
+
+  private
+
+  def check_http_error(response)
+    error = false
+    if (!response)
+      error = "No response to POST"
+    end
+    if (response && response.code[0] != "2")
+      error = "Unexpected response: #{response.code} #{response.message} #{response.body}"
+    end
+    if (error)
+      log error
+      raise error
+    end
+  end
+
+  def do_post(uri, body = nil, mime = nil)
+    req = Net::HTTP::Post.new(uri)
+    do_http(req, uri, body, mime)
+  end
+
+  def do_put(uri, body = nil, mime = nil)
+    req = Net::HTTP::Put.new(uri)
+    do_http(req, uri, body, mime)
+  end
+
+  def do_http(req, uri, body, mime)
+    req.basic_auth api_username, api_password
+    req.body = body
+    if (mime)
+      req.add_field('Content-Type', mime)
+    end
+    response = Net::HTTP.new(uri.host, uri.port).start {|http| http.request(req)}
+    check_http_error response
+    response
+  end
+
+  def log(msg)
+    if (logger)
+      logger.info msg
     end
   end
 end
