@@ -14,12 +14,9 @@ class Fedora3Ingestor
 
   def add_datastreams_to_page(page, image_data)
     image = Image.new("#{@job.dir}/#{page.filename}")
-    @logger.info "Ingesting MASTER datastream"
     image_data.add_image_datastream image.filename, 'MASTER', 'image/tiff'
-    @logger.info "Ingesting MASTER metadata"
     image_data.add_master_metadata_datastream
     image.sizes.keys.each do |size|
-      @logger.info "Ingesting #{size} datastream"
       image_data.add_image_datastream image.derivative(size), size, 'image/jpeg'
     end
     if (@category.supports_ocr)
@@ -38,6 +35,7 @@ class Fedora3Ingestor
 
   def build_page(page_list, page, number)
     image_data = Fedora3Object.from_next_pid
+    image_data.logger = @logger
     image_data.parent_pid = page_list.pid
     image_data.model_type = 'ImageData'
     image_data.title = page.label
@@ -79,7 +77,42 @@ class Fedora3Ingestor
     resource.collection_ingest
     resource.resource_collection_ingest
 
+    # Attach thumbnail to resource:
+    page = @job.metadata.order.pages[0]
+    image = Image.new("#{@job.dir}/#{page.filename}")
+    resource.add_image_datastream image.derivative('THUMBNAIL'), 'THUMBNAIL', 'image/jpeg'
+
     resource
+  end
+
+  def finalize_title resource
+    title = @job.dir[1..-1].split('/').reverse.join('_')
+    @logger.info "Updating title to #{title}"
+    resource.modify_object(
+      title,
+      nil,
+      nil,
+      'Set Label to ingest/process path',
+      nil
+    )
+
+    dc = resource.datastream_dissemination('DC')
+    resource.modify_datastream(
+      'DC',
+      nil,
+      nil,
+      nil,
+      nil,
+      nil,
+      nil,
+      nil,
+      nil,
+      'text/xml',
+      'Set dc:title to ingest/process path',
+      nil,
+      nil,
+      dc.gsub(/Incomplete... \/ Processing.../, title)
+    )
   end
 
   def run
@@ -102,6 +135,8 @@ class Fedora3Ingestor
     page_list = build_page_list(resource)
 
     add_pages page_list
+
+    finalize_title resource
 
     @logger.info "Done."
   end

@@ -281,6 +281,27 @@ class Fedora3Object
     add_sort_relationship 'custom'
   end
 
+  def modify_datastream(ds_id, ds_location, alt_ids, ds_label, versionable, ds_state, format_uri, checksum_type, checksum, mime_type, log_message, ignore_content, last_modified_date, data)
+    log "Updating datastream #{ds_id} on #{pid}"
+    uri = URI("#{api_base}/objects/#{pid}/datastreams/#{ds_id}")
+    params = {
+      dsLocation: ds_location,
+      altIDs: alt_ids,
+      dsLabel: ds_label,
+      versionable: versionable,
+      dsState: ds_state,
+      formatURI: format_uri,
+      checksumType: checksum_type,
+      checksum: checksum_type == 'DISABLED' ? nil : checksum,
+      mimeType: mime_type,
+      logMessage: log_message,
+      ignoreContent: ignore_content,
+      lastModifiedDate: last_modified_date
+    }
+    uri.query = URI.encode_www_form(params.compact)
+    response = do_put(uri, data, mime_type)
+  end
+
   def modify_object(label, owner_id, state, log_message, last_modified_date)
     log "Modifying #{pid}"
     uri = URI("#{api_base}/objects/#{pid}")
