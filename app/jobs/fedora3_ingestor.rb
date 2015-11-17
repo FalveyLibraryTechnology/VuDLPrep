@@ -14,13 +14,13 @@ class Fedora3Ingestor
 
   def add_datastreams_to_page(page, image_data)
     image = Image.new("#{@job.dir}/#{page.filename}")
-    image_data.add_image_datastream image.filename, 'MASTER', 'image/tiff'
+    image_data.add_datastream_from_file image.filename, 'MASTER', 'image/tiff'
     image_data.add_master_metadata_datastream
     image.sizes.keys.each do |size|
-      image_data.add_image_datastream image.derivative(size), size, 'image/jpeg'
+      image_data.add_datastream_from_file image.derivative(size), size, 'image/jpeg'
     end
     if (@category.supports_ocr)
-      @logger.info "TODO: OCR support"
+      image_data.add_datastream_from_file image.ocr, 'OCR-DIRTY', 'text/plain'
     end
   end
 
@@ -80,7 +80,7 @@ class Fedora3Ingestor
     # Attach thumbnail to resource:
     page = @job.metadata.order.pages[0]
     image = Image.new("#{@job.dir}/#{page.filename}")
-    resource.add_image_datastream image.derivative('THUMBNAIL'), 'THUMBNAIL', 'image/jpeg'
+    resource.add_datastream_from_file image.derivative('THUMBNAIL'), 'THUMBNAIL', 'image/jpeg'
 
     resource
   end

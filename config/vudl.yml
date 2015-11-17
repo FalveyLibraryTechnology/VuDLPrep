@@ -7,6 +7,14 @@ defaults: &defaults
   fedora3_solr_host: http://myserver:8080
   fedora3_pid_namespace: vudl
 
+  # Settings for Tesseract OCR
+  tesseract_path: /usr/local/bin/tesseract
+
+  # Settings for the textcleaner OCR preparation script. It can be downloaded
+  # from http://www.fmwconcepts.com/imagemagick/textcleaner/index.php
+  textcleaner_path: /usr/local/bin/textcleaner
+  textcleaner_switches: -g -e stretch -u -T
+
   # Base path where incoming files are stored; this must contain two levels
   # of subdirectories, the first representing categories and the second
   # representing jobs within those categories.
