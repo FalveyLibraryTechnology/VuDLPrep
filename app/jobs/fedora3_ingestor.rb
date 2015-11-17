@@ -1,3 +1,5 @@
+require 'fileutils'
+
 class Fedora3Ingestor
   @queue = :ingests
 
@@ -115,7 +117,26 @@ class Fedora3Ingestor
     )
   end
 
+  def move_directory
+    config = Rails.application.config_for(:vudl)
+    now = Time.new.strftime("%Y-%m-%d")
+    target = "#{config["processed_area_path"]}/#{now}/#{@category.name}/#{@job.name}"
+    if (File.exist?(target))
+      i = 2;
+      while (File.exist?("#{target}.#{i}"))
+        i += 1
+      end
+      target = "#{target}.#{i}"
+    end
+    @logger.info "Moving #{@job.dir} to #{target}"
+    FileUtils.mkdir_p target unless File.exist?(target)
+    FileUtils.mv Dir.glob("#{@job.dir}/*"), target
+    FileUtils.rmdir @job.dir
+  end
+
   def run
+    start_time = Time.new
+
     @logger.info "Beginning ingest."
 
     holding_area = Fedora3Object.from_pid(@category.target_collection_id)
@@ -138,6 +159,11 @@ class Fedora3Ingestor
 
     finalize_title resource
 
-    @logger.info "Done."
+    move_directory
+
+    end_time = Time.new
+    duration = (end_time - start_time) / 60
+
+    @logger.info "Done. Total time: #{duration.ceil} minute(s)."
   end
 end

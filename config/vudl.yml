@@ -20,6 +20,9 @@ defaults: &defaults
   # representing jobs within those categories.
   holding_area_path: /usr/local/holding
 
+  # Base path where processed files are moved after ingestion.
+  processed_area_path: /usr/local/processed
+
 development:
   <<: *defaults
 
