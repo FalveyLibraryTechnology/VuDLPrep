@@ -36,8 +36,9 @@ class Fedora3Object
       mimeType: mime_type,
       logMessage: log_message
     }
-    uri.query = URI.encode_www_form(params)
-    response = do_post(uri, data)
+    uri.query = URI.encode_www_form(params.compact)
+    log uri
+    response = do_post(uri, data, mime_type)
   end
 
   def add_relationship(subject, predicate, object, is_literal, datatype)
@@ -50,7 +51,7 @@ class Fedora3Object
       isLiteral: is_literal,
       datatype: datatype
     }
-    uri.query = URI.encode_www_form(params)
+    uri.query = URI.encode_www_form(params.compact)
     response = do_post(uri)
   end
 
@@ -190,24 +191,37 @@ class Fedora3Object
 
   def do_post(uri, body = nil, mime = nil)
     req = Net::HTTP::Post.new(uri)
+    do_http(req, uri, body, mime)
+  end
+
+  def do_put(uri, body = nil, mime = nil)
+    req = Net::HTTP::Put.new(uri)
+    do_http(req, uri, body, mime)
+  end
+
+  def do_http(req, uri, body, mime)
     req.basic_auth api_username, api_password
     req.body = body
     if (mime)
       req.add_field('Content-Type', mime)
     end
     response = Net::HTTP.new(uri.host, uri.port).start {|http| http.request(req)}
+    check_http_error response
+    response
+  end
+
+  def check_http_error(response)
     error = false
     if (!response)
       error = "No response to POST"
     end
     if (response && response.code[0] != "2")
-      error = "Unexpected response: #{response.code} #{response.body}"
+      error = "Unexpected response: #{response.code} #{response.message} #{response.body}"
     end
     if (error)
       log error
       raise error
     end
-    response
   end
 
   def ingest(label, format, encoding, namespace, owner_id, log_message, ignore_mime, xml = nil)
@@ -223,7 +237,7 @@ class Fedora3Object
     target_pid = xml ? "new" : pid
     log "Ingest for #{target_pid}"
     uri = URI("#{api_base}/objects/#{target_pid}")
-    uri.query = URI.encode_www_form(params)
+    uri.query = URI.encode_www_form(params.compact)
     response = do_post(uri, xml, 'text/xml')
  end
 
@@ -243,8 +257,8 @@ class Fedora3Object
       logMessage: log_message,
       lastModifiedDate: last_modified_date
     }
-    uri.query = URI.encode_www_form(params)
-    response = do_post(uri, nil, 'text/xml')
+    uri.query = URI.encode_www_form(params.compact)
+    response = do_put(uri, nil, 'text/xml')
   end
 
   def namespace
