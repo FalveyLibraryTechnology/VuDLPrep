@@ -42,6 +42,10 @@ class JobMetadata
     status
   end
 
+  def ingest_lockfile
+    "#{@job.dir}/ingest.lock"
+  end
+
   def upload_time
     time = Time.new(2000);
     order.pages.each do |page|
@@ -92,7 +96,8 @@ class JobMetadata
       derivatives: derivative_status,
       minutes_since_upload: ((Time.new - upload_time) / 60).floor,
       file_problems: file_problems,
-      published: raw[:published]
+      published: raw[:published],
+      ingesting: File.exist?(ingest_lockfile)
     }
   end
 end

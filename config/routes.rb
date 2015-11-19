@@ -5,6 +5,7 @@ Rails.application.routes.draw do
 
   get 'api/:category/:job/status', to: 'metadata#status'
   put 'api/:category/:job/derivatives', to: 'metadata#make_derivatives'
+  put 'api/:category/:job/ingest', to: 'metadata#ingest'
 
   get 'api/:category/:job', to: 'metadata#index'
   put 'api/:category/:job', to: 'metadata#update'

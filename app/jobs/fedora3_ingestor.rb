@@ -132,6 +132,7 @@ class Fedora3Ingestor
     FileUtils.mkdir_p target unless File.exist?(target)
     FileUtils.mv Dir.glob("#{@job.dir}/*"), target
     FileUtils.rmdir @job.dir
+    FileUtils.rm "#{target}/ingest.lock"
   end
 
   def run

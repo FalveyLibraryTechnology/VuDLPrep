@@ -1,4 +1,3 @@
-require 'fileutils'
 
 class MetadataController < ApplicationController
   before_filter :job_exists
@@ -13,15 +12,14 @@ class MetadataController < ApplicationController
     render json: job.metadata.status
   end
 
+  def ingest
+    Job.new(job_path(params)).ingest
+    render json: { status: 'ok' }
+  end
+
   def make_derivatives
-    job = Job.new job_path(params)
-    status = job.metadata.derivative_status
-    lockfile = job.metadata.derivative_lockfile
-    if (status[:expected] > status[:processed] && !File.exist?(lockfile))
-      FileUtils.touch lockfile
-      Resque.enqueue(DerivativeGenerator, job.dir)
-    end
-    render json: status
+    Job.new(job_path(params)).make_derivatives
+    render json: { status: 'ok' }
   end
 
   def update
@@ -31,9 +29,6 @@ class MetadataController < ApplicationController
     else
       job.metadata.raw = params
       job.metadata.save
-      if (params[:published])
-        Resque.enqueue(Fedora3Ingestor, job.dir)
-      end
       render json: { status: 'ok' }
     end
   end

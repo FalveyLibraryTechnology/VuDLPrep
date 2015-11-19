@@ -78,7 +78,7 @@ var Job = React.createClass({
     },
 
     componentDidMount: function() {
-        this.updateDerivativeStatus();
+        this.updateStatus();
     },
 
     handleClick: function(e) {
@@ -88,6 +88,12 @@ var Job = React.createClass({
     getDerivUrl: function() {
         return this.props.app.getJobUrl(
             this.props.category, this.props.children, '/derivatives'
+        );
+    },
+
+    getIngestUrl: function() {
+        return this.props.app.getJobUrl(
+            this.props.category, this.props.children, '/ingest'
         );
     },
 
@@ -104,18 +110,32 @@ var Job = React.createClass({
             url: this.getDerivUrl(),
             contentType: 'application/json',
             data: '{}',
-            success: function() { this.updateDerivativeStatus(); }.bind(this),
+            success: function() { this.updateStatus(); }.bind(this),
         });
     },
 
-    updateDerivativeStatus: function(e) {
+    ingest: function(e) {
+        e.stopPropagation();
+        if (!confirm("Are you sure? This will put a load on the server!")) {
+            return;
+        }
+        $.ajax({
+            type: 'PUT',
+            url: this.getIngestUrl(),
+            contentType: 'application/json',
+            data: '{}',
+            success: function() { this.updateStatus(); }.bind(this),
+        });
+    },
+
+    updateStatus: function(e) {
         if (typeof e !== 'undefined') {
             e.stopPropagation();
         }
         jQuery.getJSON(this.getStatusUrl(), null, function (data) {
             this.setState(data);
             if (this.state.derivatives.building) {
-                setTimeout(this.updateDerivativeStatus, 1000);
+                setTimeout(this.updateStatus, 1000);
             }
         }.bind(this));
     },
@@ -130,7 +150,11 @@ var Job = React.createClass({
                 var minutes = 10 - this.state.minutes_since_upload;
                 status = <span> [recently uploaded; please wait {minutes} minute{minutes > 1 ? 's' : ''}]</span>
             } else if (this.state.published) {
-                status = <span> [published; cannot be edited]</span>
+                if (this.state.ingesting) {
+                    status = <span> [ingesting now; cannot be edited]</span>
+                } else {
+                    status = <span> [queued for ingestion; cannot be edited] <a href="#" onClick={this.ingest}>[ingest now]</a></span>
+                }
             } else if (this.state.derivatives.expected === this.state.derivatives.processed) {
                 status = <span> [ready]</span>;
                 clickable = true;
