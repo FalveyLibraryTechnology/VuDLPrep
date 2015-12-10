@@ -12,7 +12,7 @@ body {
 }
 .preview, #zoomy { text-align: center; }
 #zoomy {
-    width: 100%; height: 600px; 
+    width: 100%; height: 600px;
 }
 #zoomyStatus {
     text-align: center;
@@ -36,7 +36,6 @@ input {
   padding: 0 2px;
 }
 .status {
-  margin: 0 6px 0 0;
   padding: 0;
   padding-top: 5px;
 }
@@ -48,6 +47,7 @@ button {
   background-color: #fff;
   cursor: pointer;
 }
+button.active { background-color: #def; }
 button.primary {
   border: 0;
   background-color: #00c;
