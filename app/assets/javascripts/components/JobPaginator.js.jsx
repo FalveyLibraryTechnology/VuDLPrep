@@ -88,12 +88,12 @@ var JobPaginator = React.createClass({
                 var msg = '';
                 if (status.file_problems.deleted.length > 0) {
                     msg += status.file_problems.deleted.length
-                        + " file(s) have been added to the job since the last edit.\n"
+                        + " file(s) have been removed from the job since the last edit.\n"
                     this.removePages(status.file_problems.deleted);
                 }
                 if (status.file_problems.added.length > 0) {
                     msg += status.file_problems.added.length
-                        + " file(s) have been removed from the job since the last edit.\n"
+                        + " file(s) have been added to the job since the last edit.\n"
                     this.addPages(status.file_problems.added);
                 }
                 alert(msg);
