@@ -14,11 +14,24 @@
  *= require_self
  */
 
+ body {
+  background: #ececec;
+  font-size: 14px;
+  font-family: "Roboto", Arial;
+  font-weight: 500;
+  overflow-x: hidden;
+}
+
+#jobSelector { margin-left: 1rem; }
+
  h2 {
    font-size: 1.1rem;
-   color: #777;
+   color: #7f8c8d;
  }
  h2 a {
    font-size: 1.6rem;
-   color: #00d;
+   color: #008AED;
+ }
+ h2 a span {
+   font-family: "Roboto Mono";
  }

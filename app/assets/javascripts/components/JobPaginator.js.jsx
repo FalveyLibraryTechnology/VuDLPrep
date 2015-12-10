@@ -101,6 +101,7 @@ var JobPaginator = React.createClass({
             var newState = this.state;
             newState.active = true;
             this.setState(newState);
+            dispatchEvent(new Event('job loaded'));
         }.bind(this));
     },
 
