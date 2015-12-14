@@ -24,8 +24,8 @@ input {
 .group input[type="text"] {
   height: auto;
   margin-right: 3px;
-  padding: 6px;
-  border: 1px solid #53626f;
+  padding: 5px;
+  border: 1px solid #fff;
   border-radius: 2px;
 }
 
@@ -33,24 +33,20 @@ button {
   box-sizing: border-box;
   height: auto;
   margin: 0 2px;
-  padding: 7px 10px 5px;
+  padding: 6px 10px;
   border: 0;
-  border-bottom: 2px solid #15181C;
   vertical-align: bottom;
-  background-color: #53626f;
+  background-color: #586e75;
   cursor: pointer;
   color: #fff !important;
-  border-radius: 5px;
+  border-radius: 2px;
   outline: none;
 }
-button:active { border-bottom-width: 1px; }
 button.active {
-  background-color: #3498db;
-  border-color: #275575;
+  background-color: #268bd2;
 }
 button.primary {
-  background-color: #27ae60;
-  border-color: #13562F;
+  background-color: #859900;
   color: #fff;
 }
 .group {
@@ -66,34 +62,34 @@ button.primary {
   border-radius: 0;
 }
 .group input[type="text"] + button,
-.group button:first-child { border-radius: 4px 0 0 4px; }
+.group button:first-child { border-radius: 2px 0 0 2px; }
 .group button:last-child {
   border-right-width: 0;
-  border-radius: 0 4px 4px 0;
+  border-radius: 0 2px 2px 0;
 }
+.group.toggles { margin-bottom: 3px; }
 
 .pageList {
   overflow: auto;
-  height: 500px;
-  margin-top: .5rem;
+  height: 450px;
+  margin-top: 3px;
   padding: 4px;
-  border: 1px solid #c1c1c1;
-  background-color: #fff;
-  border-radius: 6px 0 0 6px;
+  background-color: #586e75;
+  border-radius: 4px 0 0 4px;
 }
 .thumbnail {
   position: relative;
   float: left;
   min-width: 100px;
-  margin: 2px;
+  margin: 4px;
   padding: 4px;
-  background: #e1e1e1;
+  background: #839496;
   font-weight: 400;
   text-align: center;
   cursor: pointer;
 }
 .thumbnail.selected {
-  background: #51aded;
+  background: #2aa198;
   color: #fff;
 }
 .thumbnail .label.magic { font-style: italic; }

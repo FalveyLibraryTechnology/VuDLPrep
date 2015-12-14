@@ -15,22 +15,24 @@
  */
 
  body {
-  background: #ececec;
+  background: #002b36;
   font-size: 14px;
   font-family: "Roboto", Arial;
   font-weight: 500;
   overflow-x: hidden;
+  color: #fdf6e3;
 }
+a { color: #268bd2; }
 
 #jobSelector { margin-left: 1rem; }
 
  h2 {
    font-size: 1.1rem;
-   color: #7f8c8d;
+   color: #586e75;
  }
  h2 a {
    font-size: 1.6rem;
-   color: #008AED;
+   color: #268bd2;
  }
  h2 a span {
    font-family: "Roboto Mono";
