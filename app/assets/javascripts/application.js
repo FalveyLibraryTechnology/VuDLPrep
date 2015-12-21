@@ -31,8 +31,8 @@ function highlightButtons() {
         $('.toggles button:eq(0)').addClass('active');
       }
     } else if (labelProps[prop].length > 0 && !isNumeric(labelProps[prop])) {
-      // console.log('button[data-reactid*="'+labelProps[prop]+'"]');
-      $('button[data-reactid*="'+labelProps[prop]+'"]').addClass('active');
+      // console.log('button[data-reactid$="'+labelProps[prop]+'"], button[data-reactid$="'+labelProps[prop]+' "]');
+      $('button[data-reactid$="'+labelProps[prop]+'"], button[data-reactid$="'+labelProps[prop]+' "]').addClass('active');
     }
   }
 }
