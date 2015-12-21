@@ -22,7 +22,7 @@ class ApplicationController < ActionController::Base
 
   def job_path(params)
     # Sanitize directory path component:
-    job = params[:job].gsub(/\W/, '')
+    job = params[:job].gsub(/[^\w-]/, '')
 
     # Build full path:
     "#{category_path(params)}/#{job}"
