@@ -81,7 +81,12 @@ var Job = React.createClass({
         this.updateStatus();
     },
 
-    handleClick: function(e) {
+    handleClick: function(clickWarning) {
+        if (clickWarning) {
+            if (!confirm(clickWarning)) {
+                return;
+            }
+        }
         this.props.onJobSelect(this.props.category, this.props.children);
     },
 
@@ -143,12 +148,17 @@ var Job = React.createClass({
     render: function() {
         var status = <span> [loading...]</span>;
         var clickable = false;
+        var clickWarning = false;
         if (typeof this.state.derivatives !== 'undefined') {
             if (this.state.derivatives.expected === 0) {
                 status = <span> [empty job]</span>;
             } else if (this.state.minutes_since_upload < 10) {
-                var minutes = 10 - this.state.minutes_since_upload;
-                status = <span> [recently uploaded; please wait {minutes} minute{minutes > 1 ? 's' : ''}]</span>
+                var minutes = this.state.minutes_since_upload;
+                clickable = true;
+                clickWarning = "This job was updated " + minutes + " minute"
+                    + (minutes > 1 ? 's' : '') + " ago. Please do not edit it"
+                    + " unless you are sure all uploads have fully completed.";
+                status = <span> [recently updated]</span>
             } else if (this.state.published) {
                 if (this.state.ingesting) {
                     status = <span> [ingesting now; cannot be edited]</span>
@@ -173,7 +183,7 @@ var Job = React.createClass({
             }
         }
         var link = clickable
-            ? <a onClick={this.handleClick} href="#">{this.props.children}</a>
+            ? <a onClick={function () { this.handleClick(clickWarning); }.bind(this)} href="#">{this.props.children}</a>
             : <span>{this.props.children}</span>;
         return (
             <li>
