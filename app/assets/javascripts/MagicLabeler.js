@@ -1,5 +1,5 @@
 var MagicLabeler = {
-    prefixes: ['Front ', 'Rear '],
+    prefixes: ['Front ', 'Inside front ', 'Rear ', 'Inside rear '],
     labels: ['Blank', 'cover', 'fly leaf', 'pastedown', 'Frontispiece', 'Plate'],
     suffixes: [', recto', ', verso'],
 
