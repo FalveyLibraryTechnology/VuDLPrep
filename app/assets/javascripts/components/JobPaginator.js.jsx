@@ -283,6 +283,10 @@ var PaginatorZoomy = React.createClass({
 });
 
 var PaginatorControls = React.createClass({
+    approveCurrentPageLabel: function() {
+        this.setLabel(this.getLabel(true));
+    },
+
     getLabel: function(useMagic) {
         if (typeof useMagic === 'undefined') {
             useMagic = true;
@@ -342,7 +346,7 @@ var PaginatorControls = React.createClass({
                     <div className="status"></div>
                     <input type="text" value={this.props.paginator.getLabel(this.props.paginator.state.currentPage, false)} ref="labelInput" id="page" onChange={this.updateCurrentPageLabel} />
                     <button onClick={this.props.paginator.prevPage}>Prev</button>
-                    <button onClick={this.props.paginator.nextPage}>Next</button>
+                    <button onClick={function() { this.approveCurrentPageLabel(); this.props.paginator.nextPage(); }.bind(this)}>Next</button>
                 </div>
                 <div className="top">
                     <ZoomToggleButton paginator={this.props.paginator} />
