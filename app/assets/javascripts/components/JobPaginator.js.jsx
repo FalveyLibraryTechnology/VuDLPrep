@@ -34,6 +34,7 @@ var JobPaginator = React.createClass({
         }
         newState.order[imageNumber]['label'] = text;
         this.setState(newState);
+        dispatchEvent(new Event('Prep.editted'));
     },
 
     autonumberFollowingPages: function() {
@@ -101,7 +102,7 @@ var JobPaginator = React.createClass({
             var newState = this.state;
             newState.active = true;
             this.setState(newState);
-            dispatchEvent(new Event('job loaded'));
+            dispatchEvent(new Event('Prep.loaded'));
         }.bind(this));
     },
 
@@ -212,7 +213,11 @@ var JobPaginator = React.createClass({
                 url: this.props.app.getJobUrl(this.state.category, this.state.job, ''),
                 contentType: 'application/json',
                 data: JSON.stringify({ order: this.state.order, published: publish }),
-                success: function() { alert('Success!'); this.props.app.activateJobSelector(); }.bind(this),
+                success: function() {
+                  alert('Success!');
+                  this.props.app.activateJobSelector();
+                  dispatchEvent(new Event('Prep.saved'));
+                }.bind(this),
                 error: function() { alert('Unable to save!'); }
             });
         }.bind(this));

@@ -37,9 +37,32 @@ function highlightButtons() {
   }
 }
 
-addEventListener('job loaded', function(e) {
+addEventListener('Prep.loaded', function(e) {
   $('.thumbnail, button').click(function() {
     setTimeout(highlightButtons, 10);
   });
   $('#page').on('change', highlightButtons);
+  highlightButtons();
 }, false);
+
+var VuDLPrepEditted = false;
+addEventListener('Prep.saved', function(e) {
+  VuDLPrepEditted = false;
+}, false);
+
+addEventListener('Prep.editted', function(e) {
+  VuDLPrepEditted = true;
+}, false);
+
+function areYouSure(e) {
+  if (VuDLPrepEditted && !confirm("You haven't saved all of your changes, are you sure you want to leave this page?")) {
+    e.preventDefault();
+    return false;
+  }
+}
+$(window).on("beforeunload", areYouSure);
+$(document).on("keydown", function (e) {
+  if (e.which === 8 && !$(e.target).is("input, textarea")) {
+    return areYouSure(e);
+  }
+});
