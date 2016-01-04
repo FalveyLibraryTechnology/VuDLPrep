@@ -1,7 +1,7 @@
 var MagicLabeler = {
     prefixes: ['Front ', 'Inside front ', 'Rear ', 'Inside rear '],
     labels: ['Blank', 'cover', 'fly leaf', 'pastedown', 'Frontispiece', 'Plate'],
-    suffixes: [', recto', ', verso'],
+    suffixes: [', recto', ', verso', ', front', ', back'],
 
     adjustNumericLabel: function(prior, delta) {
         // If it's an integer, this is simple:
@@ -26,18 +26,25 @@ var MagicLabeler = {
     },
 
     getLabelFromPrevPage: function(p, getLabelCallback) {
-        var skipRectoCheck = false;
+        var skipSuffixCheck = false;
         while (p > 0) {
             var priorLabel = this.parsePageLabel(getLabelCallback(p - 1));
-            if (priorLabel['suffix'] == ', recto' && !skipRectoCheck) {
+            if (priorLabel['suffix'] == ', recto' && !skipSuffixCheck) {
                 priorLabel['suffix'] = ', verso';
+                return this.assemblePageLabel(priorLabel);
+            }
+            if (priorLabel['suffix'] == ', front' && !skipSuffixCheck) {
+                priorLabel['suffix'] = ', back';
                 return this.assemblePageLabel(priorLabel);
             }
 
             var numericLabel = this.adjustNumericLabel(priorLabel['label'], 1);
             if (false !== numericLabel) {
-                if (priorLabel['suffix'] == ', verso' && !skipRectoCheck) {
+                if (priorLabel['suffix'] == ', verso' && !skipSuffixCheck) {
                     priorLabel['suffix'] = ', recto';
+                }
+                if (priorLabel['suffix'] == ', back' && !skipSuffixCheck) {
+                    priorLabel['suffix'] = ', front';
                 }
                 priorLabel['label'] = numericLabel;
                 return this.assemblePageLabel(priorLabel);
@@ -48,7 +55,7 @@ var MagicLabeler = {
             // we don't want to repeat the recto/verso check since that will
             // cause bad results.
             p--;
-            skipRectoCheck = true;
+            skipSuffixCheck = true;
         }
         return 1;
     },
