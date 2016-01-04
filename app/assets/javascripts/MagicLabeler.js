@@ -26,9 +26,17 @@ var MagicLabeler = {
     },
 
     getLabelFromPrevPage: function(p, getLabelCallback) {
+        var bracketStatus = null;
         var skipSuffixCheck = false;
         while (p > 0) {
             var priorLabel = this.parsePageLabel(getLabelCallback(p - 1));
+            // Only carry the bracket status from the prior label, even if
+            // you delve deeper into the list...
+            if (null === bracketStatus) {
+                bracketStatus = priorLabel['brackets'];
+            } else {
+                priorLabel['brackets'] = bracketStatus;
+            }
             if (priorLabel['suffix'] == ', recto' && !skipSuffixCheck) {
                 priorLabel['suffix'] = ', verso';
                 return this.assemblePageLabel(priorLabel);
