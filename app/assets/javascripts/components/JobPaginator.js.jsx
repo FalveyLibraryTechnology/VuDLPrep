@@ -67,7 +67,7 @@ var JobPaginator = React.createClass({
 
     loadJob: function(category, job) {
         var promise = new Promise(function(resolve, reject) {
-            jQuery.getJSON(this.props.app.getJobUrl(category, job, ''), null, function (data, status) {
+            this.props.app.getJSON(this.props.app.getJobUrl(category, job, ''), null, function (data, status) {
                 resolve(data);
             });
         }.bind(this));
@@ -78,7 +78,7 @@ var JobPaginator = React.createClass({
             data.currentPage = 0;
             this.setState(data);
             return new Promise(function(resolve, reject) {
-                jQuery.getJSON(this.getStatusUrl(), null, function (data) {
+                this.props.app.getJSON(this.getStatusUrl(), null, function (data) {
                     resolve(data);
                 });
             }.bind(this));
@@ -186,7 +186,7 @@ var JobPaginator = React.createClass({
             // If the user wants to publish, let's make sure all derivatives are
             // ready! Otherwise we can resolve with no further actions.
             if (publish) {
-                jQuery.getJSON(this.getStatusUrl(), null, function (data) {
+                this.props.app.getJSON(this.getStatusUrl(), null, function (data) {
                     resolve(data);
                 }.bind(this));
             } else {
@@ -208,7 +208,7 @@ var JobPaginator = React.createClass({
                     return;
                 }
             }
-            $.ajax({
+            this.props.app.ajax({
                 type: 'PUT',
                 url: this.props.app.getJobUrl(this.state.category, this.state.job, ''),
                 contentType: 'application/json',

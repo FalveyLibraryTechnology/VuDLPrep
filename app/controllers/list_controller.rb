@@ -1,4 +1,6 @@
 class ListController < ApplicationController
+  before_action :validate_token
+
   def index
     render json: CategoryCollection.new(holding_path).raw
   end

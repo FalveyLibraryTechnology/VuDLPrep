@@ -1,5 +1,6 @@
 
 class MetadataController < ApplicationController
+  before_action :validate_token
   before_filter :job_exists
 
   def index

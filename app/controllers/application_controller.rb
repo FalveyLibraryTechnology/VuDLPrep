@@ -27,4 +27,10 @@ class ApplicationController < ActionController::Base
     # Build full path:
     "#{category_path(params)}/#{job}"
   end
+
+  def validate_token
+    authenticate_or_request_with_http_token do |token|
+      token == "foo"
+    end
+  end
 end

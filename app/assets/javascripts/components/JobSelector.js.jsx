@@ -15,7 +15,7 @@ var JobSelector = React.createClass({
     },
 
     componentDidMount: function() {
-        jQuery.getJSON(this.props.url, null, function (data) {
+        this.props.app.getJSON(this.props.url, null, function (data) {
             this.setState({active: true, data: data});
         }.bind(this));
     },
@@ -124,7 +124,7 @@ var Job = React.createClass({
         if (!confirm("Are you sure? This will put a load on the server!")) {
             return;
         }
-        $.ajax({
+        this.props.app.ajax({
             type: 'PUT',
             url: this.getIngestUrl(),
             contentType: 'application/json',
@@ -137,7 +137,7 @@ var Job = React.createClass({
         if (typeof e !== 'undefined') {
             e.stopPropagation();
         }
-        jQuery.getJSON(this.getStatusUrl(), null, function (data) {
+        this.props.app.getJSON(this.getStatusUrl(), null, function (data) {
             this.setState(data);
             if (this.state.derivatives.building) {
                 setTimeout(this.updateStatus, 1000);

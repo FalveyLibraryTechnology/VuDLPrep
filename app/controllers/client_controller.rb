@@ -5,6 +5,7 @@ class ClientController < ApplicationController
     if (!session[:user_id])
       redirect_to '/auth/cas'
     end
+    @token = "foo"
   end
 
   def login

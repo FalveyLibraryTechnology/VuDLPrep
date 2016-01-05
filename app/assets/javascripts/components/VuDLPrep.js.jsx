@@ -21,6 +21,22 @@ var VuDLPrep = React.createClass({
         this.refs.paginator.loadJob(category, job);
     },
 
+    ajax: function(params) {
+        params.beforeSend = function (xhr) {
+            xhr.setRequestHeader('Authorization', 'Token ' + this.props.token);
+        }.bind(this);
+        $.ajax(params);
+    },
+
+    getJSON: function(url, data, success) {
+        this.ajax({
+          dataType: "json",
+          url: url,
+          data: data,
+          success: success
+        });
+    },
+
     render: function() {
         return (
             <div>
