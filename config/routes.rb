@@ -15,6 +15,7 @@ Rails.application.routes.draw do
   get 'api', to: 'list#index', as: 'api'
 
   get '/', to: 'client#index', as: 'home'
+  get '/auth/:provider/callback', to: 'client#login', as: 'login'
   
   # The priority is based upon order of creation: first created -> highest priority.
   # See how all your routes lay out with "rake routes".
