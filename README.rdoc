@@ -10,3 +10,16 @@ pagination of jobs prior to their import into VuDL.
      $ rake db:migrate
 
 Then edit config/vudl.yml and config/initializers/omniauth.rb as needed.
+
+
+== Usage
+
+This application uses Resque for queueing; be sure to run
+
+    $ rake resque:work
+
+to start a worker process to build derivatives.
+
+A custom rake task has been defined to ingest jobs published from this system into the repository; to run this process:
+
+    $ rake ingest
