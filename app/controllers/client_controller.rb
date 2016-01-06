@@ -15,4 +15,10 @@ class ClientController < ApplicationController
     end
     redirect_to '/'
   end
+
+  def logout
+    if (session[:token])
+      Token.where(token: session[:token]).destroy_all
+    end
+  end
 end

@@ -38,8 +38,12 @@ var VuDLPrep = React.createClass({
     },
 
     render: function() {
+        var logout = this.props.logoutUrl
+            ? <div className="logout"><a href={this.props.logoutUrl}>Log Out</a></div>
+            : '';
         return (
             <div>
+                {logout}
                 <JobSelector app={this} ref="selector" onJobSelect={this.selectJob} url={this.props.url} />
                 <JobPaginator app={this} ref="paginator" />
             </div>

@@ -3,7 +3,7 @@
 .controls { margin-top: 8px; }
 .top {
   position: absolute;
-  top: 8px;
+  top: 25px;
   right: 8px;
 }
 .top button { margin: 0 2px; }
@@ -113,3 +113,5 @@ button.primary {
     height: 600px;
 }
 #zoomyStatus { text-align: center; }
+
+.logout { float: right; }
