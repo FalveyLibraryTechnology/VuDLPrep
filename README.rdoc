@@ -4,6 +4,19 @@ This project provides an interface (driven by a JSON API) for managing review an
 pagination of jobs prior to their import into VuDL.
 
 
+== Workflow / Assumptions
+
+This software assumes a two-tiered set of directories, in which the top tier represents categories and the second tier represents jobs. Each job folder is expected to contain TIFF images of a multi-page item. For example:
+
+    /usr/local/holding
+        /category1
+            /job1
+                0001.tiff
+                0002.tiff
+
+The software provides functionality for automatically generating JPEG derivatives of these TIFFs as well as assigning labels to the pages within the jobs. When all of this work has been completed, the finished data can be published to a repository. (Currently, this is designed for the VuDL Fedora3-based repository, but additional options will be added eventually).
+
+
 == Installation
 
      $ bundle install
