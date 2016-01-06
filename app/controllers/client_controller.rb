@@ -9,16 +9,24 @@ class ClientController < ApplicationController
   end
 
   def login
-    if request.env['omniauth.auth']['uid']
+    if valid_user(request.env['omniauth.auth']['uid'])
       token = Token.create(token: SecureRandom.uuid, expiration: Time.new + (60 * 60 * 24))
       session[:token] = token.token
+      redirect_to '/'
     end
-    redirect_to '/'
   end
 
   def logout
     if (session[:token])
       Token.where(token: session[:token]).destroy_all
     end
+  end
+
+  private
+
+  def valid_user(username)
+    config = Rails.application.config_for(:vudl)
+    list = config["user_whitelist"]
+    list == "*" || list == username || (list.is_a?(Array) && list.include?(username))
   end
 end
