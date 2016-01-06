@@ -1,5 +1,5 @@
 class ListController < ApplicationController
-  before_action :validate_token
+  before_action :validate_token_in_auth_header
 
   def index
     render json: CategoryCollection.new(holding_path).raw

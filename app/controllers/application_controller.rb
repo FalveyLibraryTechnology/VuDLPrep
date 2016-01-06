@@ -28,9 +28,14 @@ class ApplicationController < ActionController::Base
     "#{category_path(params)}/#{job}"
   end
 
-  def validate_token
+  def validate_token(token)
+    validated_token = Token.find_by_token token
+    validated_token && !validated_token.expired
+  end
+
+  def validate_token_in_auth_header
     authenticate_or_request_with_http_token do |token|
-      token == "foo"
+      validate_token token
     end
   end
 end

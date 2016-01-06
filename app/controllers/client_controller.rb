@@ -1,15 +1,18 @@
-require 'omniauth'
+require 'securerandom'
 
 class ClientController < ApplicationController
   def index
-    if (!session[:user_id])
+    if (!session[:token] || !validate_token(session[:token]))
       redirect_to '/auth/cas'
     end
-    @token = "foo"
+    @token = session[:token]
   end
 
   def login
-    session[:user_id] = request.env['omniauth.auth']['uid']
+    if request.env['omniauth.auth']['uid']
+      token = Token.create(token: SecureRandom.uuid, expiration: Time.new + (60 * 60 * 24))
+      session[:token] = token.token
+    end
     redirect_to '/'
   end
 end
