@@ -110,7 +110,7 @@ var Job = React.createClass({
 
     buildDerivatives: function(e) {
         e.stopPropagation();
-        $.ajax({
+        this.props.app.ajax({
             type: 'PUT',
             url: this.getDerivUrl(),
             contentType: 'application/json',
