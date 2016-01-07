@@ -11,6 +11,10 @@ class ClientController < ApplicationController
   def login
     if valid_user(request.env['omniauth.auth']['uid'])
       token = Token.create(token: SecureRandom.uuid, expiration: Time.new + (60 * 60 * 24))
+      # Expire old tokens on login; might be better to do this through a rake
+      # task, but doing it here ensures we don't forget about it, and this should
+      # not be a very expensive operation.
+      Token.expire_old_tokens
       session[:token] = token.token
       redirect_to '/'
     end
