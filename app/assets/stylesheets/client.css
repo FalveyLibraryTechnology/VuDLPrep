@@ -1,9 +1,14 @@
+body { overflow: hidden; }
+
 .hidden { display: none; }
 
-.controls { margin-top: 8px; }
+.controls {
+  margin-top: 41px;
+  padding: 0 8px;
+}
 .top {
   position: absolute;
-  top: 25px;
+  top: 41px;
   right: 8px;
 }
 .top button { margin: 0 2px; }
@@ -29,33 +34,9 @@ input {
   border-radius: 2px;
 }
 
-button {
-  box-sizing: border-box;
-  height: auto;
-  margin: 0 2px;
-  padding: 7px 10px 5px;
-  border: 0;
-  border-bottom: 2px solid #15181C;
-  vertical-align: bottom;
-  background-color: #53626f;
-  cursor: pointer;
-  color: #fff !important;
-  border-radius: 5px;
-  outline: none;
-}
-button:active { border-bottom-width: 1px; }
-button.active {
-  background-color: #3498db;
-  border-color: #275575;
-}
-button.primary {
-  background-color: #27ae60;
-  border-color: #13562F;
-  color: #fff;
-}
 .group {
-  display: table;
-  margin: 3px 2px 2px;
+  display: block;
+  margin: 4px 2px;
   margin-left: 0;
   overflow: hidden;
 }
@@ -71,11 +52,27 @@ button.primary {
   border-right-width: 0;
   border-radius: 0 4px 4px 0;
 }
+.toggles, .toggles + button {
+  display: inline-block;
+  margin-top: 0;
+  margin-right: 4px;
+  vertical-align: top;
+}
+.toggles button, .toggles + button {
+  padding: 7px 40px 5px;
+  background-color: #7f8c8d;
+  border-color: #34495e;
+}
+
+.group#prefixes button { width: 25%; }
+.group#labels button { width: 16.66%; }
+.group#suffixes button { width: 25%; }
 
 .pageList {
   overflow: auto;
-  height: 500px;
+  height: 600px;
   margin-top: .5rem;
+  margin-left: 8px;
   padding: 4px;
   border: 1px solid #c1c1c1;
   background-color: #fff;
@@ -113,5 +110,3 @@ button.primary {
     height: 600px;
 }
 #zoomyStatus { text-align: center; }
-
-.logout { float: right; }

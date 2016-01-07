@@ -358,15 +358,15 @@ var PaginatorControls = React.createClass({
                     <button className="primary" onClick={function() { this.props.paginator.save(false); }.bind(this)}>Save</button>
                     <button className="primary" onClick={function() { this.props.paginator.save(true); }.bind(this)}>Save and Publish</button>
                 </div>
-                <PaginatorControlGroup callback={this.setLabelPrefix}>{MagicLabeler.prefixes}</PaginatorControlGroup>
-                <PaginatorControlGroup callback={this.setLabelBody}>{MagicLabeler.labels}</PaginatorControlGroup>
-                <PaginatorControlGroup callback={this.setLabelSuffix}>{MagicLabeler.suffixes}</PaginatorControlGroup>
+                <PaginatorControlGroup callback={this.setLabelPrefix} label="prefixes">{MagicLabeler.prefixes}</PaginatorControlGroup>
+                <PaginatorControlGroup callback={this.setLabelBody}   label="labels"  >{MagicLabeler.labels}</PaginatorControlGroup>
+                <PaginatorControlGroup callback={this.setLabelSuffix} label="suffixes">{MagicLabeler.suffixes}</PaginatorControlGroup>
                 <div className="toggles group">
-                    <button onClick={this.toggleBrackets}>Toggle []</button>
-                    <button onClick={this.toggleCase}>Toggle Case</button>
-                    <button onClick={this.toggleRoman}>Toggle Roman Numerals</button>
+                    <button onClick={this.toggleBrackets} title="Toggle Brackets">[ ]</button>
+                    <button onClick={this.toggleCase} title="Toggle Case"><i className="fa fa-text-height"></i></button>
+                    <button onClick={this.toggleRoman} title="Toggle Roman Numerals">4<i className="fa fa-fw fa-arrows-h"></i>IV</button>
                 </div>
-                <button onClick={this.props.paginator.autonumberFollowingPages}>Autonumber Following Pages</button>
+                <button onClick={this.props.paginator.autonumberFollowingPages} title="Autonumber Following Pages"><i className="fa fa-sort-numeric-asc"></i></button>
             </div>
         );
     }
@@ -383,7 +383,7 @@ var PaginatorControlGroup = React.createClass({
             );
         }.bind(this));
         return (
-            <div className="group">{buttons}</div>
+            <div className="group" id={this.props.label}>{buttons}</div>
         );
     }
 });

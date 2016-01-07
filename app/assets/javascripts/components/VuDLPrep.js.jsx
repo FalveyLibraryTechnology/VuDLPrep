@@ -39,7 +39,7 @@ var VuDLPrep = React.createClass({
 
     render: function() {
         var logout = this.props.logoutUrl
-            ? <div className="logout"><a href={this.props.logoutUrl}>Log Out</a></div>
+            ? <div className="logout"><a href={this.props.logoutUrl} className="button">Log Out</a></div>
             : '';
         return (
             <div>
