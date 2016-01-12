@@ -21,14 +21,21 @@ var JobSelector = React.createClass({
     },
 
     render: function() {
-        var categories = this.state.data.map(function (category) {
-            return (
-                <Category app={this.props.app} onJobSelect={this.props.onJobSelect} key={category.category} data={category} />
-            );
-        }.bind(this));
+        var categories = [];
+        var empty_categories = [];
+        for (var i in this.state.data) {
+            var category = this.state.data[i];
+            var element = <Category app={this.props.app} onJobSelect={this.props.onJobSelect} key={category.category} data={category} />
+            if (category.jobs.length > 0) {
+                categories[categories.length] = element;
+            } else {
+                empty_categories[empty_categories.length] = element;
+            }
+        }
         return (
             <div className={this.state.active ? '' : 'hidden'} id="jobSelector">
                 {categories}
+                {empty_categories}
             </div>
         );
     }
