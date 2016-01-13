@@ -166,41 +166,46 @@ var Job = React.createClass({
     },
 
     render: function() {
-        var status = <span> [loading...]</span>;
         var clickable = false;
         var clickWarning = false;
+        var action = '';
+        var statusText = [];
         if (typeof this.state.derivatives !== 'undefined') {
             if (this.state.derivatives.expected === 0) {
-                status = <span> [empty job]</span>;
-            } else if (this.state.minutes_since_upload < 10) {
-                var minutes = this.state.minutes_since_upload;
-                clickable = true;
-                clickWarning = "This job was updated " + minutes + " minute"
-                    + (minutes > 1 ? 's' : '') + " ago. Please do not edit it"
-                    + " unless you are sure all uploads have fully completed.";
-                status = <span> [recently updated]</span>
-            } else if (this.state.published) {
-                if (this.state.ingesting) {
-                    status = <span> [ingesting now; cannot be edited]</span>
-                } else {
-                    status = <span> [queued for ingestion; cannot be edited] <a href="#" onClick={this.ingest}>[ingest now]</a></span>
-                }
-            } else if (this.state.derivatives.expected === this.state.derivatives.processed) {
-                status = <span> [ready]</span>;
-                clickable = true;
+                statusText.push('empty job');
             } else {
-                var build = '';
-                if (!this.state.derivatives.building) {
-                    build = <span> <a href="#" onClick={this.buildDerivatives}>[build]</a></span>
+                var pageCount = parseInt(this.state.derivatives.expected / 3);
+                statusText.push(pageCount + (pageCount > 1 ? ' pages' : ' page'));
+                if (this.state.minutes_since_upload < 10) {
+                    var minutes = this.state.minutes_since_upload;
+                    clickable = true;
+                    clickWarning = "This job was updated " + minutes + " minute"
+                        + (minutes != 1 ? 's' : '') + " ago. Please do not edit it"
+                        + " unless you are sure all uploads have fully completed.";
+                    statusText.push('recently updated');
                 }
-                status = (
-                    <span>
-                        &nbsp;[derivatives: {this.state.derivatives.processed} / {this.state.derivatives.expected}]
-                        {build}
-                    </span>
-                );
-                clickable = true;
+                if (this.state.published) {
+                    if (this.state.ingesting) {
+                        statusText.push('ingesting now; cannot be edited');
+                    } else {
+                        statusText.push('queued for ingestion; cannot be edited');
+                        action = <a href="#" onClick={this.ingest}>[ingest now]</a>
+                    }
+                } else if (this.state.derivatives.expected === this.state.derivatives.processed) {
+                    statusText.push('ready');
+                    clickable = true;
+                } else {
+                    var build = '';
+                    if (!this.state.derivatives.building) {
+                        action = <a href="#" onClick={this.buildDerivatives}>[build derivatives]</a>
+                    }
+                    var percentDone = (100 * (this.state.derivatives.processed / this.state.derivatives.expected));
+                    statusText.push('derivatives: ' + percentDone.toFixed(2) + '% built');
+                    clickable = true;
+                }
             }
+        } else {
+            statusText.push('loading...');
         }
         var link = clickable
             ? <a onClick={function () { this.handleClick(clickWarning); }.bind(this)} href="#">{this.props.children}</a>
@@ -208,7 +213,8 @@ var Job = React.createClass({
         return (
             <li>
                 {link}
-                {status}
+                {' [' + statusText.join(', ') + '] '}
+                {action}
             </li>
         );
     }
