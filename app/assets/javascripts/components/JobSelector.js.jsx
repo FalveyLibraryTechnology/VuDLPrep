@@ -42,11 +42,24 @@ var JobSelector = React.createClass({
 });
 
 var Category = React.createClass({
+    checkStorage: function() {
+        return typeof(window.sessionStorage) !== "undefined"
+            ? "true" === window.sessionStorage.getItem("open-" + this.props.data.category)
+            : false;
+    },
+
+    setStorage: function(isOpen) {
+        if (typeof(window.sessionStorage) !== "undefined") {
+            window.sessionStorage.setItem("open-" + this.props.data.category, isOpen ? "true" : "false")
+        }
+    },
+
     getInitialState: function() {
-        return {open: false};
+        return {open: this.checkStorage()};
     },
 
     toggle: function() {
+        this.setStorage(!this.state.open);
         this.setState({open: !this.state.open});
     },
 
