@@ -355,8 +355,8 @@ var PaginatorControls = React.createClass({
                 </div>
                 <div className="top">
                     <ZoomToggleButton paginator={this.props.paginator} />
-                    <button className="primary" onClick={function() { this.props.paginator.save(false); }.bind(this)}>Save</button>
-                    <button className="primary" onClick={function() { this.props.paginator.save(true); }.bind(this)}>Save and Publish</button>
+                    <button className="primary" onClick={function() { this.approveCurrentPageLabel(); this.props.paginator.save(false); }.bind(this)}>Save</button>
+                    <button className="primary" onClick={function() { this.approveCurrentPageLabel(); this.props.paginator.save(true); }.bind(this)}>Save and Publish</button>
                 </div>
                 <PaginatorControlGroup callback={this.setLabelPrefix} label="prefixes">{MagicLabeler.prefixes}</PaginatorControlGroup>
                 <PaginatorControlGroup callback={this.setLabelBody}   label="labels"  >{MagicLabeler.labels}</PaginatorControlGroup>
