@@ -238,6 +238,7 @@ var JobPaginator = React.createClass({
                 <div className="row">
                     <div className="six col">{preview}</div>
                     <div className="six col">
+                        <p>{this.state.category} &gt; {this.state.job}</p>
                         <PaginatorControls paginator={this} />
                         <PaginatorList paginator={this} pageCount={this.state.order.length} />
                     </div>
