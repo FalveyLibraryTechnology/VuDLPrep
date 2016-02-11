@@ -178,7 +178,6 @@ var Job = React.createClass({
                 statusText.push(pageCount + (pageCount > 1 ? ' pages' : ' page'));
                 if (this.state.minutes_since_upload < 10) {
                     var minutes = this.state.minutes_since_upload;
-                    clickable = true;
                     clickWarning = "This job was updated " + minutes + " minute"
                         + (minutes != 1 ? 's' : '') + " ago. Please do not edit it"
                         + " unless you are sure all uploads have fully completed.";
