@@ -82,7 +82,7 @@ input {
 .thumbnail {
   position: relative;
   float: left;
-  min-width: 100px;
+  min-width: 120px;
   margin: 2px;
   padding: 4px;
   background: #e1e1e1;
@@ -90,9 +90,30 @@ input {
   text-align: center;
   cursor: pointer;
 }
+.thumbnail .ratio {
+  position: relative;
+  width: 100%;
+  margin-bottom: 4px;
+  padding-bottom: 100%;
+}
 .thumbnail.selected {
   background: #51aded;
   color: #fff;
+}
+.thumbnail .content {
+  position: absolute;
+  left: 0;
+  width: 100%;
+  top: 0;
+  height: 100%;
+}
+.thumbnail .img-helper {
+  display: inline-block;
+  height: 100%;
+  vertical-align: middle;
+}
+.thumbnail img {
+  vertical-align: middle;
 }
 .thumbnail .label.magic { font-style: italic; }
 .thumbnail .number {

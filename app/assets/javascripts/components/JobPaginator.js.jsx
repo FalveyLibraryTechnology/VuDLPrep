@@ -427,9 +427,14 @@ var Thumbnail = React.createClass({
         var myClass = 'thumbnail' + (this.props.selected ? ' selected' : '');
         return (
             <div onClick={this.selectPage} className={myClass} ref="wrapper">
-                <img src={this.props.paginator.getImageUrl(this.props.number, 'thumb')} />
-                <div className="number">{this.props.number + 1}</div>
-                <div className={labelClass}>{label}</div>
+              <div className="ratio">
+                <div className="content">
+                  <span className="img-helper"></span>
+                  <img src={this.props.paginator.getImageUrl(this.props.number, 'thumb')} />
+                </div>
+              </div>
+              <div className="number">{this.props.number + 1}</div>
+              <div className={labelClass}>{label}</div>
             </div>
         );
     }
