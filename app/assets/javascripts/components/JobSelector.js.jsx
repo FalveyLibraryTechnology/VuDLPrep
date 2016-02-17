@@ -165,12 +165,48 @@ var Job = React.createClass({
         }.bind(this));
     },
 
+    getAgeString: function(minutes) {
+        if (1 == minutes) {
+            return "1 minute old";
+        }
+        if (minutes < 60) {
+            return minutes + " minutes old";
+        }
+        var hours = Math.floor(minutes / 60);
+        if (1 == hours) {
+            return "1 hour old";
+        }
+        if (hours < 24) {
+            return hours + " hours old";
+        }
+        var days = Math.floor(hours / 24);
+        if (1 == days) {
+            return "1 day old";
+        }
+        if (days < 7) {
+            return days + " days old";
+        }
+        var weeks = Math.floor(days / 7);
+        if (1 == weeks) {
+            return "1 week old";
+        }
+        if (weeks < 52) {
+            return weeks + " weeks old";
+        }
+        var years = Math.floor(weeks / 52);
+        if (1 == years) {
+            return "1 year old";
+        }
+        return years + " years old";
+    },
+
     render: function() {
         var clickable = false;
         var clickWarning = false;
         var action = '';
         var statusText = [];
         if (typeof this.state.derivatives !== 'undefined') {
+            statusText.push(this.getAgeString(this.state.minutes_since_upload));
             if (this.state.derivatives.expected === 0) {
                 statusText.push('empty job');
             } else {
@@ -181,7 +217,6 @@ var Job = React.createClass({
                     clickWarning = "This job was updated " + minutes + " minute"
                         + (minutes != 1 ? 's' : '') + " ago. Please do not edit it"
                         + " unless you are sure all uploads have fully completed.";
-                    statusText.push('recently updated');
                 }
                 if (this.state.published) {
                     if (this.state.ingesting) {
