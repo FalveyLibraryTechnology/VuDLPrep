@@ -47,7 +47,7 @@ class JobMetadata
   end
 
   def upload_time
-    time = Time.new(2000);
+    time = File.mtime(@job.dir);
     order.pages.each do |page|
       current_file = "#{@job.dir}/#{page.filename}"
       if File.exist?(current_file)
