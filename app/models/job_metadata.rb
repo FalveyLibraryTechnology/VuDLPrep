@@ -47,7 +47,9 @@ class JobMetadata
   end
 
   def upload_time
-    time = File.mtime(@job.dir);
+    # Choose an arbitrary date in the distant past to seed the loop:
+    undefined_time = Time.new(2000)
+    time = undefined_time;
     order.pages.each do |page|
       current_file = "#{@job.dir}/#{page.filename}"
       if File.exist?(current_file)
@@ -56,6 +58,11 @@ class JobMetadata
           time = current
         end
       end
+    end
+    # If we didn't find a file mtime inside the directory, fail over to the
+    # mtime of the directory itself
+    if (time == undefined_time)
+      time = File.mtime(@job.dir)
     end
     time
   end
