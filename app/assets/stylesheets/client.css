@@ -82,13 +82,14 @@ input {
 .thumbnail {
   position: relative;
   float: left;
-  min-width: 120px;
+  width: 125px;
   margin: 2px;
   padding: 4px;
   background: #e1e1e1;
   font-weight: 400;
   text-align: center;
   cursor: pointer;
+  word-break: break-all;
 }
 .thumbnail .ratio {
   position: relative;
@@ -115,6 +116,7 @@ input {
 .thumbnail img {
   vertical-align: middle;
 }
+.thumbnail .label { min-height: 2.6em; }
 .thumbnail .label.magic { font-style: italic; }
 .thumbnail .number {
   position: absolute;
