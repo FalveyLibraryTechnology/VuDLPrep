@@ -33,8 +33,11 @@ class Image
     if !File.exist?(deriv)
       path = File.dirname(deriv)
       FileUtils.mkdir_p path unless File.exist?(path)
-      image = ImageList.new(@filename)
-      image.resize_to_fit!(constraint_for_size(size))
+      image = Image.read(@filename).first
+      constraint = constraint_for_size(size)
+      if (image.columns > constraint || image.rows > constraint)
+        image.resize_to_fit!(constraint)
+      end
       image.write(deriv)
     end
     deriv
