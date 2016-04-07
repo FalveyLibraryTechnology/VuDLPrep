@@ -129,6 +129,7 @@ var Job = React.createClass({
     },
 
     buildDerivatives: function(e) {
+        e.preventDefault();
         e.stopPropagation();
         this.props.app.ajax({
             type: 'PUT',
@@ -140,6 +141,7 @@ var Job = React.createClass({
     },
 
     ingest: function(e) {
+        e.preventDefault();
         e.stopPropagation();
         if (!confirm("Are you sure? This will put a load on the server!")) {
             return;
