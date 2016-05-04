@@ -58,7 +58,9 @@ var Category = React.createClass({
         return {open: this.checkStorage()};
     },
 
-    toggle: function() {
+    toggle: function(e) {
+        e.preventDefault();
+        e.stopPropagation();
         this.setStorage(!this.state.open);
         this.setState({open: !this.state.open});
     },
