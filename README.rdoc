@@ -6,13 +6,26 @@ pagination of jobs prior to their import into VuDL.
 
 == Workflow / Assumptions
 
-This software assumes a two-tiered set of directories, in which the top tier represents categories and the second tier represents jobs. Each job folder is expected to contain TIFF images of a multi-page item. For example:
+This software assumes a two-tiered set of directories, in which the top tier represents categories and the second tier represents jobs.
+
+Each category folder is expected to contain a batch-params.ini file that controls parameters for the category. For example:
+
+    [collection]
+    ; ID of holding area object in Fedora 3:
+    destination = vudl:5
+
+    [ocr]
+    ; Should we perform OCR on the jobs in this category?
+    ocr = 'true'
+
+Each job folder is expected to contain TIFF images of a multi-page item. For example:
 
     /usr/local/holding
         /category1
+            /batch-params.ini
             /job1
-                0001.tiff
-                0002.tiff
+                0001.TIF
+                0002.TIF
 
 The software provides functionality for automatically generating JPEG derivatives of these TIFFs as well as assigning labels to the pages within the jobs. When all of this work has been completed, the finished data can be published to a repository. (Currently, this is designed for the VuDL Fedora3-based repository, but additional options will be added eventually).
 
