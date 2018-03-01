@@ -1,3 +1,4 @@
+require 'net/http'
 require 'rexml/document'
 require 'rexml/xpath'
 
