@@ -35,6 +35,15 @@ class Fedora3Ingestor
     end
   end
 
+  def add_documents(document_list)
+    order = @job.metadata.documents.list
+    order.each_with_index do |document, i|
+      @logger.info "Adding #{i+1} of #{order.length} - #{document.filename}"
+      image_data = build_document document_list, document, i+1
+      add_datastreams_to_document document, image_data
+    end
+  end
+
   def build_page(page_list, page, number)
     image_data = Fedora3Object.from_next_pid
     image_data.logger = @logger
@@ -65,6 +74,38 @@ class Fedora3Ingestor
     page_list.list_collection_ingest
 
     page_list
+  end
+
+  def build_document(document_list, document, number)
+    document_data = Fedora3Object.from_next_pid
+    document_data.logger = @logger
+    document_data.parent_pid = document_list.pid
+    document_data.model_type = 'PDFData'
+    document_data.title = document.label
+    @logger.info "Creating Document Object #{document_data.pid}"
+
+    document_data.core_ingest('I')
+    document_data.data_ingest
+    document_data.document_data_ingest
+
+    document_data.add_sequence_relationship document_list.pid, number
+
+    document_data
+  end
+
+  def build_document_list(resource)
+    document_list = Fedora3Object.from_next_pid
+    document_list.logger = @logger
+    document_list.parent_pid = resource.pid
+    document_list.model_type = "ListCollection"
+    document_list.title = "Document List"
+    @logger.info "Creating Document List Object #{resource.pid}"
+
+    document_list.core_ingest("I")
+    document_list.collection_ingest
+    document_list.list_collection_ingest
+
+    document_list
   end
 
   def build_resource(holding_area)
@@ -155,8 +196,12 @@ class Fedora3Ingestor
     end
 
     page_list = build_page_list(resource)
-
     add_pages page_list
+
+    if (@job.metadata.documents.list.length > 0)
+      document_list = build_document_list(resource)
+      add_documents document_list
+    end
 
     finalize_title resource
 
