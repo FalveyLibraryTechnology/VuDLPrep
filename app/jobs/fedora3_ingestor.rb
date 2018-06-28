@@ -26,6 +26,11 @@ class Fedora3Ingestor
     end
   end
 
+  def add_datastreams_to_document(document, document_data)
+    document_data.add_datastream_from_file "#{@job.dir}/#{document.filename}", 'MASTER', 'application/pdf'
+    document_data.add_master_metadata_datastream
+  end
+
   def add_pages(page_list)
     order = @job.metadata.order.pages
     order.each_with_index do |page, i|
