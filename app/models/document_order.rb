@@ -3,7 +3,7 @@ class DocumentOrder
   
     def self.from_job(job)
       list = Dir.glob("#{job.dir}/*.PDF").sort.map do |pdf|
-        Page.new(File.basename(pdf), nil)
+        Document.new(File.basename(pdf), "PDF")
       end
       self.new list
     end
