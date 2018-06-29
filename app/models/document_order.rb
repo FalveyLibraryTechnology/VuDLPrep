@@ -2,7 +2,7 @@ class DocumentOrder
     attr_reader :list
   
     def self.from_job(job)
-      list = Dir.glob("#{job.dir}/*.PDF").sort.map do |pdf|
+      list = Dir.glob("#{job.dir}/*.PDF", File::FNM_CASEFOLD).sort.map do |pdf|
         Document.new(File.basename(pdf), "PDF")
       end
       self.new list
