@@ -264,6 +264,10 @@ class Fedora3Object
     add_model_relationship 'ImageData'
   end
 
+  def document_data_ingest
+    add_model_relationship 'PDFData'
+  end
+
   def ingest(label, format, encoding, namespace, owner_id, log_message, ignore_mime, xml = nil)
     params = {
       label: label,

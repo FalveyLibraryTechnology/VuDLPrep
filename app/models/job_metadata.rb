@@ -88,6 +88,14 @@ class JobMetadata
     @order = PageOrder.from_raw(data)
   end
 
+  def documents
+    @documents ||= DocumentOrder.from_job(@job)
+  end
+
+  def documents=(data)
+    @documents = DocumentOrder.from_raw(data)
+  end
+
   def published
     @published ||= false
   end
