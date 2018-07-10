@@ -40,8 +40,8 @@ gem 'react-rails', '1.4.1'
 
 gem 'inifile', '3.0.0'
 
-gem 'omniauth', '1.2.2'
-gem 'omniauth-cas', '1.1.0'
+gem 'omniauth', '1.3.2'
+gem 'omniauth-cas', '1.1.1'
 
 group :development, :test do
   # Call 'byebug' anywhere in the code to stop execution and get a debugger console
