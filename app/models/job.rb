@@ -37,7 +37,9 @@ class Job
       image.derivative("LARGE")
     end
     image_list = Magick::ImageList.new(*jpgs)
-    image_list.write(@dir + "/pages.pdf")
+    filename = @dir + "/pages.pdf"
+    image_list.write(filename)
+    filename
   end
 
   def metadata
