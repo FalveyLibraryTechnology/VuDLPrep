@@ -32,7 +32,8 @@ class Job
 
   def generate_pdf
     jpgs = metadata.order.raw.map do |page|
-      @dir + page.filename
+      image = Image.new(@dir + page.filename)
+      image.derivative_path("LARGE")
     end
     image_list = Magick::ImageList.new(*jpgs)
     image_list.write(@dir + "pages.pdf")
