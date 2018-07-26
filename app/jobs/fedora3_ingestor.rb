@@ -43,6 +43,7 @@ class Fedora3Ingestor
   def add_documents(document_list)
     order = @job.metadata.documents.list
     if order.length == 0 && @category.supports_pdf_generation
+      @logger.info "Generating PDF"
       order = DocumentOrder.new @job.generate_pdf
     end
 
