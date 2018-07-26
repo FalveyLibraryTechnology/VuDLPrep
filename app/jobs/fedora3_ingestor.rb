@@ -208,7 +208,7 @@ class Fedora3Ingestor
     page_list = build_page_list(resource)
     add_pages page_list
 
-    if (@job.metadata.documents.list.length > 0)
+    if (@job.metadata.documents.list.length > 0 || @category.supports_pdf_generation)
       document_list = build_document_list(resource)
       add_documents document_list
     end
