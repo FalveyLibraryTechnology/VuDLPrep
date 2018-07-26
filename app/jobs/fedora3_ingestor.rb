@@ -42,6 +42,10 @@ class Fedora3Ingestor
 
   def add_documents(document_list)
     order = @job.metadata.documents.list
+    if order.length == 0 && @category.supports_pdf_generation do
+      order = DocumentOrder.new @job.generate_pdf
+    end
+
     order.each_with_index do |document, i|
       @logger.info "Adding #{i+1} of #{order.length} - #{document.filename}"
       image_data = build_document document_list, document, i+1
