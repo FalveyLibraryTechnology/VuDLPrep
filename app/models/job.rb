@@ -31,12 +31,13 @@ class Job
   end
 
   def generate_pdf
-    jpgs = metadata.order.raw.map do |page|
-      image = Image.new(@dir + page.filename)
-      image.derivative_path("LARGE")
+    dir = @dir
+    jpgs = metadata.order.pages.map do |page|
+      image = Image.new(dir + "/" + page.filename)
+      image.derivative("LARGE")
     end
     image_list = Magick::ImageList.new(*jpgs)
-    image_list.write(@dir + "pages.pdf")
+    image_list.write(@dir + "/pages.pdf")
   end
 
   def metadata
