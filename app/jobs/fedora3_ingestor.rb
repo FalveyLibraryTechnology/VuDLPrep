@@ -44,7 +44,7 @@ class Fedora3Ingestor
     order = @job.metadata.documents.list
     if order.length == 0 && @category.supports_pdf_generation
       @logger.info "Generating PDF"
-      order = DocumentOrder.new @job.generate_pdf
+      order = DocumentOrder.new(@job.generate_pdf).list
     end
 
     order.each_with_index do |document, i|
