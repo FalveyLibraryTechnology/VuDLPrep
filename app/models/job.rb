@@ -1,3 +1,4 @@
+require 'rmagick'
 require 'fileutils'
 
 class Job
@@ -27,6 +28,18 @@ class Job
       FileUtils.touch lockfile
       Resque.enqueue(DerivativeGenerator, dir)
     end
+  end
+
+  def generate_pdf
+    dir = @dir
+    jpgs = metadata.order.pages.map do |page|
+      image = Image.new(dir + "/" + page.filename)
+      image.derivative("LARGE")
+    end
+    image_list = Magick::ImageList.new(*jpgs)
+    filename = @dir + "/pages.pdf"
+    image_list.write(filename)
+    filename
   end
 
   def metadata

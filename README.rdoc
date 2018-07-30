@@ -18,6 +18,10 @@ Each category folder is expected to contain a batch-params.ini file that control
     ; Should we perform OCR on the jobs in this category?
     ocr = 'true'
 
+    [pdf]
+    ; Should we generate a PDF if none is already in the folder?
+    generate = 'true'
+
 Each job folder is expected to contain TIFF images of a multi-page item. For example:
 
     /usr/local/holding

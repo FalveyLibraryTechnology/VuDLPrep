@@ -20,6 +20,10 @@ class Category
     ini['ocr']['ocr'] && ini['ocr']['ocr'].tr(" '\"", "") != "false"
   end
 
+  def supports_pdf_generation
+    ini['pdf']['generate'] && ini['pdf']['generate'].tr(" '\"", "") != "false"
+  end
+
   def raw
     {
       category: name,

@@ -42,6 +42,11 @@ class Fedora3Ingestor
 
   def add_documents(document_list)
     order = @job.metadata.documents.list
+    if order.length == 0 && @category.supports_pdf_generation
+      @logger.info "Generating PDF"
+      order = DocumentOrder.new(@job.generate_pdf).list
+    end
+
     order.each_with_index do |document, i|
       @logger.info "Adding #{i+1} of #{order.length} - #{document.filename}"
       image_data = build_document document_list, document, i+1
@@ -203,7 +208,7 @@ class Fedora3Ingestor
     page_list = build_page_list(resource)
     add_pages page_list
 
-    if (@job.metadata.documents.list.length > 0)
+    if (@job.metadata.documents.list.length > 0 || @category.supports_pdf_generation)
       document_list = build_document_list(resource)
       add_documents document_list
     end
