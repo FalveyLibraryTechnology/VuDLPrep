@@ -20,7 +20,7 @@ Each category folder is expected to contain a batch-params.ini file that control
 
     [pdf]
     ; Should we generate a PDF if none is already in the folder?
-    pdfgenerate = 'true'
+    generate = 'true'
 
 Each job folder is expected to contain TIFF images of a multi-page item. For example:
 

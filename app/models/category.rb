@@ -21,7 +21,7 @@ class Category
   end
 
   def supports_pdf_generation
-    ini['pdf']['pdfgenerate'] && ini['pdf']['pdfgenerate'].tr(" '\"", "") != "false"
+    ini['pdf']['generate'] && ini['pdf']['generate'].tr(" '\"", "") != "false"
   end
 
   def raw
