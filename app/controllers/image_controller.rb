@@ -25,7 +25,7 @@ class ImageController < ApplicationController
 
   def orig_image_path(params)
     dir = job_path(params)
-    filename = params[:image].gsub(/[^\w.]/, '')
+    filename = params[:image].gsub(/[^-\w.]/, '')
     "#{dir}/#{filename}"
   end
 end
