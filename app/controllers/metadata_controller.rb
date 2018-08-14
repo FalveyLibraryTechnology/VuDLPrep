@@ -25,6 +25,9 @@ class MetadataController < ApplicationController
 
   def update
     job = Job.new job_path(params)
+    if (params[:order].nil?)
+      params[:order] = [];
+    end
     if !JobMetadataValidator.valid?(job, params)
       render status: 400, json: { error: "Invalid JSON document" }
     else
