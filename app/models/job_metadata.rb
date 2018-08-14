@@ -113,7 +113,7 @@ class JobMetadata
       file_problems: file_problems,
       published: raw[:published],
       ingesting: File.exist?(ingest_lockfile),
-      documents: documents.length
+      documents: documents.list.length
     }
   end
 end
