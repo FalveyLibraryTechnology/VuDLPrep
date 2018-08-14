@@ -131,10 +131,11 @@ class Fedora3Ingestor
     resource.resource_collection_ingest
 
     # Attach thumbnail to resource:
-    page = @job.metadata.order.pages[0]
-    image = Image.new("#{@job.dir}/#{page.filename}")
-    resource.add_datastream_from_file image.derivative('THUMBNAIL'), 'THUMBNAIL', 'image/jpeg'
-
+	if @job.metadata.order.pages.length > 0
+	  page = @job.metadata.order.pages[0]
+	  image = Image.new("#{@job.dir}/#{page.filename}")
+	  resource.add_datastream_from_file image.derivative('THUMBNAIL'), 'THUMBNAIL', 'image/jpeg'
+	end
     resource
   end
 
@@ -205,8 +206,10 @@ class Fedora3Ingestor
       raise "TODO: deal with ordered collection sequence numbers"
     end
 
-    page_list = build_page_list(resource)
-    add_pages page_list
+    if @job.metadata.order.pages.length > 0
+      page_list = build_page_list(resource)
+      add_pages page_list
+    end
 
     if (@job.metadata.documents.list.length > 0 || @category.supports_pdf_generation)
       document_list = build_document_list(resource)

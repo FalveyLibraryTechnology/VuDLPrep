@@ -32,6 +32,9 @@ var JobPaginator = React.createClass({
         if (text !== null && text.length == 0) {
             text = null;
         }
+        if (typeof newState.order[imageNumber] === "undefined") {
+            return;
+        }
         newState.order[imageNumber]['label'] = text;
         this.setState(newState);
         dispatchEvent(new Event('Prep.editted'));

@@ -211,10 +211,13 @@ var Job = React.createClass({
         var statusText = [];
         if (typeof this.state.derivatives !== 'undefined') {
             statusText.push(this.getAgeString(this.state.minutes_since_upload));
-            if (this.state.derivatives.expected === 0) {
+            if (this.state.derivatives.expected === 0 && this.state.documents === 0) {
                 statusText.push('empty job');
             } else {
                 var pageCount = parseInt(this.state.derivatives.expected / 3);
+                if (this.state.documents > 0) {
+                    statusText.push(this.state.documents + (this.state.documents > 1 ? ' documents' : ' document'));
+                }
                 statusText.push(pageCount + (pageCount > 1 ? ' pages' : ' page'));
                 if (this.state.minutes_since_upload < 10) {
                     var minutes = this.state.minutes_since_upload;

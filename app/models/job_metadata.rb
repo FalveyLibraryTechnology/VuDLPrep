@@ -112,7 +112,8 @@ class JobMetadata
       minutes_since_upload: ((Time.new - upload_time) / 60).floor,
       file_problems: file_problems,
       published: raw[:published],
-      ingesting: File.exist?(ingest_lockfile)
+      ingesting: File.exist?(ingest_lockfile),
+      documents: documents.list.length
     }
   end
 end
