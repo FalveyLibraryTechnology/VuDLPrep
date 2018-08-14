@@ -131,10 +131,11 @@ class Fedora3Ingestor
     resource.resource_collection_ingest
 
     # Attach thumbnail to resource:
-    page = @job.metadata.order.pages[0]
-    image = Image.new("#{@job.dir}/#{page.filename}")
-    resource.add_datastream_from_file image.derivative('THUMBNAIL'), 'THUMBNAIL', 'image/jpeg'
-
+	if @job.metadata.order.pages.length > 0
+	  page = @job.metadata.order.pages[0]
+	  image = Image.new("#{@job.dir}/#{page.filename}")
+	  resource.add_datastream_from_file image.derivative('THUMBNAIL'), 'THUMBNAIL', 'image/jpeg'
+	end
     resource
   end
 
