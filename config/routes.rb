@@ -3,6 +3,8 @@ Rails.application.routes.draw do
   get 'api/:category/:job/:image/medium', to: 'image#medium', as: 'medium', :constraints => { :image => /[^\/]+/ }
   get 'api/:category/:job/:image/large', to: 'image#large', as: 'large', :constraints => { :image => /[^\/]+/ }
 
+  delete 'api/:category/:job/:image/*', to: 'image#delete', :constraints => { :image => /[^\/]+/ }
+
   get 'api/:category/:job/status', to: 'metadata#status'
   put 'api/:category/:job/derivatives', to: 'metadata#make_derivatives'
   put 'api/:category/:job/ingest', to: 'metadata#ingest'
