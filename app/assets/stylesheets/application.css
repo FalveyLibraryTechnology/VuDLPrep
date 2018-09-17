@@ -66,6 +66,11 @@ button.primary,
   color: #fff;
 }
 
+button.danger {
+  background-color: red;
+  margin-left: 20px;
+}
+
 .logout {
   position: absolute;
   top: 12px;

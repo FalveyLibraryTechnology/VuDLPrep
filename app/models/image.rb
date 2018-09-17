@@ -88,4 +88,16 @@ class Image
     end
     file
   end
+
+  def delete
+    files = @sizes.map { |size,junk| derivative_path(size) }
+    files << derivative_path('OCR-DIRTY', 'txt')
+    files << derivative_path('ocr/pngs', 'png')
+    files << @filename
+    files.each do |file|
+      if File.exist?(file)
+        File.delete(file)
+      end
+    end
+  end
 end
