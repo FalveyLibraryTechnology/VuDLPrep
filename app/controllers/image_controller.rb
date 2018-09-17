@@ -14,19 +14,27 @@ class ImageController < ApplicationController
   end
 
   def delete
-    image(params).delete
-    render json: { status: 'ok' }
+    image = load_image(params)
+    if (image)
+      image.delete
+      render json: { status: 'ok' }
+    else
+      render status: 404, json: { status: 'image missing' }
+    end
   end
 
   def handle_image(params, size)
-    deriv = image(params).derivative(size)
-    send_file deriv, type: "image/jpeg", disposition: "inline"
+    image = load_image(params)
+    if (image)
+      send_file image.derivative(size), type: "image/jpeg", disposition: "inline"
+    else
+      render status: 404, json: { status: 'image missing' }
+    end
   end
 
-  def image(params)
+  def load_image(params)
     orig = orig_image_path(params)
     if !File.exist?(orig)
-      render status: 404, json: { status: 'image missing' }
       return
     end
     Image.new(orig)
