@@ -18,6 +18,8 @@ Rails.application.routes.draw do
   get '/auth/:provider/callback', to: 'client#login', as: 'login'
   get '/logout', to: 'client#logout', as: 'logout'
 
+  get 'fedora/ocr/:id', to: 'fedora#ocr'
+
   # The priority is based upon order of creation: first created -> highest priority.
   # See how all your routes lay out with "rake routes".
 
