@@ -15,6 +15,6 @@ class OcrGenerator
   
     protected
     def random_string
-      @string ||= "#{SecureRandom.urlsafe_base64}.TIFF"
+      "#{SecureRandom.urlsafe_base64}.TIFF"
     end
 end
