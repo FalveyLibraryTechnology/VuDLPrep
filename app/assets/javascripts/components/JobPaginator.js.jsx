@@ -64,6 +64,31 @@ var JobPaginator = React.createClass({
         return count;
     },
 
+    deletePage: function() {
+        if (this.state.order.length < 2) {
+            alert('You cannot delete the last page in a job.');
+            return;
+        }
+        if (!confirm("Are you sure you wish to delete the current page?")) {
+            return;
+        }
+        var imageUrl = this.getImageUrl(this.state.currentPage, '*');
+        var parts = imageUrl.split("/");
+        var imageFilename = parts[parts.length - 2];
+        this.props.app.ajax({
+            type: 'DELETE',
+            url: imageUrl,
+            success: function() {
+              this.removePages([imageFilename]);
+              if (this.state.currentPage >= this.state.order.length) {
+                  this.setPage(this.state.currentPage - 1);
+              }
+              alert('Page deleted!');
+            }.bind(this),
+            error: function() { alert('Unable to delete!'); }
+        });
+    },
+
     getInitialState: function() {
         return {active: false, currentPage: 0, zoom: false, order: []};
     },
@@ -371,6 +396,7 @@ var PaginatorControls = React.createClass({
                     <button onClick={this.toggleRoman} title="Toggle Roman Numerals">4<i className="fa fa-fw fa-arrows-h"></i>IV</button>
                 </div>
                 <button onClick={this.props.paginator.autonumberFollowingPages} title="Autonumber Following Pages"><i className="fa fa-sort-numeric-asc"></i></button>
+                <button className="danger" onClick={this.props.paginator.deletePage} title="Delete Current Page"><i className="fa fa-fw fa-trash"></i> Delete Current Page</button>
             </div>
         );
     }
