@@ -30,6 +30,10 @@ class Job
     end
   end
 
+  def config
+    @config ||= Rails.application.config_for(:vudl)
+  end
+
   def generate_pdf
     dir = @dir
     jpgs = metadata.order.pages.map do |page|
@@ -39,6 +43,16 @@ class Job
     image_list = Magick::ImageList.new(*jpgs)
     filename = @dir + "/pages.pdf"
     image_list.write(filename)
+    
+    ocrmypdf = config['ocrmypdf_path']
+    if (ocrmypdf)
+      ocrmypdf_cmd = "#{ocrmypdf} #{filename} #{filename}"
+      ocrmypdf_success = system ocrmypdf_cmd
+      if (!ocrmypdf_success)
+        raise "Problem running ocrmypdf"
+      end
+    end
+
     filename
   end
 
