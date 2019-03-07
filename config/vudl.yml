@@ -9,7 +9,7 @@ defaults: &defaults
   # Settings for Tesseract OCR
   tesseract_path: /usr/local/bin/tesseract
 
-  # Settings for ocrmypdf
+  # Settings for ocrmypdf (omit setting to skip this step if you aren't using it)
   #ocrmypdf_path: /usr/local/bin/ocrmypdf
 
   # Settings for the textcleaner OCR preparation script. It can be downloaded
