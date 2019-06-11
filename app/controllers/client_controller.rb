@@ -3,19 +3,20 @@ require 'securerandom'
 class ClientController < ApplicationController
   def index
     if (!session[:token] || !validate_token(session[:token]))
-      redirect_to '/auth/cas'
+      config = Rails.application.config_for(:vudl)
+      if (config["require_login"])
+        redirect_to '/auth/cas'
+        return
+      else
+        establish_session_token
+      end
     end
     @token = session[:token]
   end
 
   def login
     if valid_user(request.env['omniauth.auth']['uid'])
-      token = Token.create(token: SecureRandom.uuid, expiration: Time.new + (60 * 60 * 24))
-      # Expire old tokens on login; might be better to do this through a rake
-      # task, but doing it here ensures we don't forget about it, and this should
-      # not be a very expensive operation.
-      Token.expire_old_tokens
-      session[:token] = token.token
+      establish_session_token
       redirect_to '/'
     end
   end
@@ -27,6 +28,15 @@ class ClientController < ApplicationController
   end
 
   private
+
+  def establish_session_token
+    token = Token.create(token: SecureRandom.uuid, expiration: Time.new + (60 * 60 * 24))
+    # Expire old tokens on login; might be better to do this through a rake
+    # task, but doing it here ensures we don't forget about it, and this should
+    # not be a very expensive operation.
+    Token.expire_old_tokens
+    session[:token] = token.token
+  end
 
   def valid_user(username)
     config = Rails.application.config_for(:vudl)

@@ -25,6 +25,10 @@ defaults: &defaults
   # Base path where processed files are moved after ingestion.
   processed_area_path: /usr/local/processed
 
+  # Should we require a login? (Set to false for easy debugging; DO NOT DISABLE
+  # IN PRODUCTION)
+  require_login: true
+
   # An array of uids that are allowed to log in (e.g. [user1, user2, user3]; set
   # to "*" to allow all users). See also config/initializers/omniauth.rb for
   # authentication settings.
