@@ -56,8 +56,11 @@ class Image
       FileUtils.mkdir_p txt_path unless File.exist?(txt_path)
       tesseract_cmd = "#{config['tesseract_path']} #{ocr_derivative} #{txt[0..-5]} #{ocr_properties}"
       tesseract_success = system tesseract_cmd
-      if (!tesseract_success || !File.exist?(txt))
-        raise "Problem running Tesseract"
+      if (!tesseract_success)
+        raise "Problem running Tesseract command: #{tesseract_cmd}"
+      end
+      if (!File.exist?(txt))
+        raise "Tesseract output file #{txt} does not exist; Tesseract command: #{tesseract_cmd}"
       end
     end
     txt
