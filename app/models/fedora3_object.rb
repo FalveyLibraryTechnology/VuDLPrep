@@ -63,6 +63,27 @@ class Fedora3Object < BaseHttpObject
     )
   end
 
+  def add_datastream_from_string(contents, stream, mime_type)
+    if (mime_type == "text/plain" && contents.length == 0)
+      contents = "\n" # workaround for 500 error on empty OCR
+    end
+    add_datastream(
+      stream,
+      'M',
+      nil,
+      nil,
+      "#{self.pid.tr(':', '_')}_#{stream}",
+      'false',
+      'A',
+      nil,
+      'MD5',
+      nil,
+      mime_type,
+      "Initial Ingest addDatastream - #{stream}",
+      contents
+    )
+  end
+
   def add_master_metadata_datastream
     add_datastream(
       'MASTER-MD',
