@@ -43,27 +43,10 @@ class Fedora3Object < BaseHttpObject
 
   def add_datastream_from_file(filename, stream, mime_type)
     contents = File.open(filename, 'rb').read
-    if (mime_type == "text/plain" && contents.length == 0)
-      contents = "\n" # workaround for 500 error on empty OCR
-    end
-    add_datastream(
-      stream,
-      'M',
-      nil,
-      nil,
-      "#{self.pid.tr(':', '_')}_#{stream}",
-      'false',
-      'A',
-      nil,
-      'MD5',
-      nil,
-      mime_type,
-      "Initial Ingest addDatastream - #{stream}",
-      contents
-    )
+    add_datastream_from_string(contents, stream, mime_type)
   end
 
-  def add_datastream_from_string(contents, stream, mime_type)
+  def add_datastream_from_string(contents, stream, mime_type, checksum_type = 'MD5')
     if (mime_type == "text/plain" && contents.length == 0)
       contents = "\n" # workaround for 500 error on empty OCR
     end
@@ -76,7 +59,7 @@ class Fedora3Object < BaseHttpObject
       'false',
       'A',
       nil,
-      'MD5',
+      checksum_type,
       nil,
       mime_type,
       "Initial Ingest addDatastream - #{stream}",

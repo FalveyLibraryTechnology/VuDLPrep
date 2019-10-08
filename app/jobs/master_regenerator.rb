@@ -46,9 +46,21 @@ class MasterRegenerator
       tool_version = tool.add_element "DIGIPROVMD:tool_version"
       tool_version.text = "Revised 10/8/2019"
       tool_serial = tool.add_element "DIGIPROVMD:tool_serial_number"
+      process_creator = REXML::XPath.first(xml, "//DIGIPROVMD:process_creator", ns)
+      process_datetime = REXML::XPath.first(xml, "//DIGIPROVMD:process_datetime", ns)
+      process_label = REXML::XPath.first(xml, "//DIGIPROVMD:process_label", ns)
+      process_organization = REXML::XPath.first(xml, "//DIGIPROVMD:process_organization", ns)
+      container.delete(process_creator)
+      container.delete(process_datetime)
+      container.delete(process_label)
+      container.delete(process_organization)
+      container.add(process_creator)
+      container.add(process_datetime)
+      container.add(process_label)
+      container.add(process_organization)
       formatter = REXML::Formatters::Pretty.new
       formatter.compact = true
-      resource_collection.add_datastream_from_string formatter.write(xml.root, ""), 'PROCESS-MD', 'text/xml'
+      resource_collection.add_datastream_from_string formatter.write(xml.root, ""), 'PROCESS-MD', 'text/xml', 'DISABLED'
     end
 
     def self.perform(pid)
