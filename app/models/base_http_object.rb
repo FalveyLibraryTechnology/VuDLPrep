@@ -1,7 +1,7 @@
 class BaseHttpObject
-    attr_accessor :logger
+  attr_accessor :logger
 
-    protected
+  protected
 
   def check_http_error(response)
     error = false
