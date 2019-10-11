@@ -244,6 +244,7 @@ var Job = React.createClass({
                     statusText.push('derivatives: ' + percentDone.toFixed(2) + '% built');
                     clickable = true;
                 }
+                statusText.push(this.state.ingest_info);
             }
         } else {
             statusText.push('loading...');

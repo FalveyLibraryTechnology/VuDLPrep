@@ -29,7 +29,7 @@ class JobMetadata
   end
 
   def derivative_status
-    status = { expected: 0, processed: 0, building: File.exist?(derivative_lockfile) }
+    status = { expected: 0, processed: 0, building: File.exist?(derivative_lockfile, ingest_info) }
     order.pages.each do |page|
       image = Image.new("#{@job.dir}/#{page.filename}")
       image.sizes.keys.each do |key|
@@ -80,6 +80,10 @@ class JobMetadata
     }
   end
 
+  def ingest_info
+    system "tail -n 1 #{@job.dir}/ingest.log"
+  end
+
   def order
     @order ||= PageOrder.from_job(@job)
   end
@@ -113,7 +117,8 @@ class JobMetadata
       file_problems: file_problems,
       published: raw[:published],
       ingesting: File.exist?(ingest_lockfile),
-      documents: documents.list.length
+      documents: documents.list.length,
+      ingest_info: ingest_info
     }
   end
 end
