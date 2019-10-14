@@ -209,6 +209,10 @@ var Job = React.createClass({
         var clickWarning = false;
         var action = '';
         var statusText = [];
+        var ingestInfo = '';
+        if (typeof this.state.ingest_info !== "undefined") { 
+            ingestInfo = this.state.ingest_info;
+        }
         if (typeof this.state.derivatives !== 'undefined') {
             statusText.push(this.getAgeString(this.state.minutes_since_upload));
             if (this.state.derivatives.expected === 0 && this.state.documents === 0) {
@@ -244,7 +248,6 @@ var Job = React.createClass({
                     statusText.push('derivatives: ' + percentDone.toFixed(2) + '% built');
                     clickable = true;
                 }
-                statusText.push(this.state.ingest_info);
             }
         } else {
             statusText.push('loading...');
@@ -257,6 +260,8 @@ var Job = React.createClass({
                 {link}
                 {' [' + statusText.join(', ') + '] '}
                 {action}
+                <br />
+                {'' + ingestInfo + ''}
             </li>
         );
     }
