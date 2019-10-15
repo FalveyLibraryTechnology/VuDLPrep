@@ -81,7 +81,8 @@ class JobMetadata
   end
 
   def ingest_info
-    IO.readlines("#{@job.dir}/ingest.log")[-1]
+    logfile = "#{@job.dir}/ingest.log"
+    File.exist?(logfile) ? IO.readlines(logfile)[-1] : ''
   end
 
   def order
