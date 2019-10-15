@@ -261,7 +261,7 @@ var Job = React.createClass({
                 {' [' + statusText.join(', ') + '] '}
                 {action}
                 <br />
-                {'' + ingestInfo + ''}
+                {ingestInfo}
             </li>
         );
     }
