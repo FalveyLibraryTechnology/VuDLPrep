@@ -80,6 +80,11 @@ class JobMetadata
     }
   end
 
+  def ingest_info
+    logfile = "#{@job.dir}/ingest.log"
+    File.exist?(logfile) ? IO.readlines(logfile)[-1] : ''
+  end
+
   def order
     @order ||= PageOrder.from_job(@job)
   end
@@ -113,7 +118,8 @@ class JobMetadata
       file_problems: file_problems,
       published: raw[:published],
       ingesting: File.exist?(ingest_lockfile),
-      documents: documents.list.length
+      documents: documents.list.length,
+      ingest_info: ingest_info
     }
   end
 end
