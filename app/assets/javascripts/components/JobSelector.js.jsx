@@ -163,7 +163,7 @@ var Job = React.createClass({
         }
         this.props.app.getJSON(this.getStatusUrl(), null, function (data) {
             this.setState(data);
-            if (this.state.derivatives.building) {
+            if (this.state.derivatives.building || (typeof this.state.ingest_info !== 'undefined' && this.state.ingest_info.length > 0)) {
                 setTimeout(this.updateStatus, 1000);
             }
         }.bind(this));
