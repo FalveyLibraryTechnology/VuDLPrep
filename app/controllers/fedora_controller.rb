@@ -5,4 +5,9 @@ class FedoraController < ApplicationController
     Resque.enqueue(OcrGenerator, params[:id])
     render json: { status: 'ok' }
   end
+
+  def regeneratemaster
+    Resque.enqueue(MasterRegenerator, params[:id])
+    render json: { status: 'ok' }
+  end
 end

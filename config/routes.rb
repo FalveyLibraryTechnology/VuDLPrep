@@ -21,6 +21,7 @@ Rails.application.routes.draw do
   get '/logout', to: 'client#logout', as: 'logout'
 
   put 'fedora/ocr/:id', to: 'fedora#ocr'
+  put 'fedora/regeneratemaster/:id', to: 'fedora#regeneratemaster'
 
   # The priority is based upon order of creation: first created -> highest priority.
   # See how all your routes lay out with "rake routes".

@@ -6,6 +6,8 @@ defaults: &defaults
   fedora3_password: password
   fedora3_pid_namespace: vudl
 
+  solr_query_url: http://myserver:8983/solr/core/query
+
   # Settings for Tesseract OCR
   tesseract_path: /usr/local/bin/tesseract
 

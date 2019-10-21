@@ -2,8 +2,8 @@ require 'net/http'
 require 'rexml/document'
 require 'rexml/xpath'
 
-class Fedora3Object
-  attr_accessor :logger, :model_type, :parent_pid, :pid, :title
+class Fedora3Object < BaseHttpObject 
+  attr_accessor :model_type, :parent_pid, :pid, :title
 
   def initialize()
     @config = Rails.application.config_for(:vudl)
@@ -43,6 +43,10 @@ class Fedora3Object
 
   def add_datastream_from_file(filename, stream, mime_type)
     contents = File.open(filename, 'rb').read
+    add_datastream_from_string(contents, stream, mime_type)
+  end
+
+  def add_datastream_from_string(contents, stream, mime_type, checksum_type = 'MD5')
     if (mime_type == "text/plain" && contents.length == 0)
       contents = "\n" # workaround for 500 error on empty OCR
     end
@@ -55,7 +59,7 @@ class Fedora3Object
       'false',
       'A',
       nil,
-      'MD5',
+      checksum_type,
       nil,
       mime_type,
       "Initial Ingest addDatastream - #{stream}",
@@ -353,56 +357,6 @@ class Fedora3Object
     end
     if (process_md)
       raise "TODO: support process_md parameter"
-    end
-  end
-
-  private
-
-  def check_http_error(response)
-    error = false
-    if (!response)
-      error = "No response to POST"
-    end
-    if (response && response.code[0] != "2")
-      error = "Unexpected response: #{response.code} #{response.message} #{response.body}"
-    end
-    if (error)
-      log error
-      raise error
-    end
-  end
-
-  def do_get(uri, params)
-    uri.query = URI.encode_www_form(params)
-    response = Net::HTTP.get_response(uri)
-    check_http_error response
-    response.body
-  end
-
-  def do_http(req, uri, body, mime)
-    req.basic_auth api_username, api_password
-    req.body = body
-    if (mime)
-      req.add_field('Content-Type', mime)
-    end
-    response = Net::HTTP.new(uri.host, uri.port).start {|http| http.request(req)}
-    check_http_error response
-    response
-  end
-
-  def do_post(uri, body = nil, mime = nil)
-    req = Net::HTTP::Post.new(uri)
-    do_http(req, uri, body, mime)
-  end
-
-  def do_put(uri, body = nil, mime = nil)
-    req = Net::HTTP::Put.new(uri)
-    do_http(req, uri, body, mime)
-  end
-
-  def log(msg)
-    if (logger)
-      logger.info msg
     end
   end
 end
