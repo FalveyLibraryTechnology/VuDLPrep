@@ -151,6 +151,11 @@ class Fedora3Ingestor
     )
 
     dc = resource.datastream_dissemination('DC')
+    replace_dcmetadata resource, dc.gsub(/Incomplete... \/ Processing.../, title), 'Set dc:title to ingest/process path'
+  end
+
+  def replace_dcmetadata resource, dc, message
+    @logger.info message
     resource.modify_datastream(
       'DC',
       nil,
@@ -162,10 +167,10 @@ class Fedora3Ingestor
       nil,
       nil,
       'text/xml',
-      'Set dc:title to ingest/process path',
+      message,
       nil,
       nil,
-      dc.gsub(/Incomplete... \/ Processing.../, title)
+      dc
     )
   end
 
@@ -211,12 +216,17 @@ class Fedora3Ingestor
       add_pages page_list
     end
 
+
     if (@job.metadata.documents.list.length > 0 || @category.supports_pdf_generation)
       document_list = build_document_list(resource)
       add_documents document_list
     end
 
     finalize_title resource
+
+    if @job.metadata.dc.length > 0
+      replace_dcmetadata resource, @job.metadata.dc, 'Loading DC XML'
+    end
 
     move_directory
 
