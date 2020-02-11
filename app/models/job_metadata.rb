@@ -24,6 +24,16 @@ class JobMetadata
     @published = data["published"] === true
   end
 
+  def dc
+    filename = "#{@job.dir}/dc.xml"
+    if File.exist? filename
+      return File.open(filename) do |f|
+        f.read
+      end
+    end
+    ""
+  end
+
   def derivative_lockfile
     "#{@job.dir}/derivatives.lock"
   end
