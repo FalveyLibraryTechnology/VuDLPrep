@@ -26,12 +26,13 @@ class Audio
           FileUtils.mkdir_p path unless File.exist?(path)
           if @extensions.include? extension
             ffmpeg = config['ffmpeg_path']
-            if (ffmpeg)
-                ffmpeg_cmd = "#{ffmpeg} -i #{@dir}/#{@filename} #{deriv}"
-                ffmpeg_success = system ffmpeg_cmd
-              if (!ffmpeg_success)
-                raise "Problem running ffmpeg"
-              end
+            if (!ffmpeg)
+              raise "ffmpeg not configured."
+            end
+            ffmpeg_cmd = "#{ffmpeg} -i #{@dir}/#{@filename} #{deriv}"
+            ffmpeg_success = system ffmpeg_cmd
+            if (!ffmpeg_success)
+              raise "Problem running ffmpeg"
             end
 
           end
