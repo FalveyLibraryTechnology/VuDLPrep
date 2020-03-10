@@ -14,8 +14,8 @@ defaults: &defaults
   # Settings for ocrmypdf (omit setting to skip this step if you aren't using it)
   #ocrmypdf_path: /usr/local/bin/ocrmypdf
 
-  #Settings for FFmpeg
-  ffmpeg_path: /usr/bin/ffmpeg
+  # Settings for FFmpeg
+  #ffmpeg_path: /usr/bin/ffmpeg
 
   # Settings for the textcleaner OCR preparation script. It can be downloaded
   # from http://www.fmwconcepts.com/imagemagick/textcleaner/index.php
