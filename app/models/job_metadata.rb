@@ -111,6 +111,14 @@ class JobMetadata
     @documents = DocumentOrder.from_raw(data)
   end
 
+  def audio
+    @audio ||= AudioOrder.from_job(@job)
+  end
+
+  def audio=(data)
+    @audio = AudioOrder.from_raw(data)
+  end
+
   def published
     @published ||= false
   end
@@ -129,6 +137,7 @@ class JobMetadata
       published: raw[:published],
       ingesting: File.exist?(ingest_lockfile),
       documents: documents.list.length,
+      audio: audio.list.length,
       ingest_info: ingest_info
     }
   end
