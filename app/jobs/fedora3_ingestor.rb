@@ -31,6 +31,16 @@ class Fedora3Ingestor
     document_data.add_master_metadata_datastream
   end
 
+  def add_datastreams_to_audio(audio, audio_data)
+    @logger.info "Adding Flac"
+    audio_data.add_datastream_from_file "#{@job.dir}/#{audio.filename}", 'MASTER', 'audio/x-flac'
+    @logger.info "Adding MP3"
+    audio_data.add_datastream_from_file(audio.derivative('MP3'), 'MP3', 'audio/mpeg')
+    @logger.info "Adding OGG"
+    audio_data.add_datastream_from_file(audio.derivative('OGG'), 'OGG', 'audio/ogg')
+    audio_data.add_master_metadata_datastream
+  end
+
   def add_pages(page_list)
     order = @job.metadata.order.pages
     order.each_with_index do |page, i|
@@ -51,6 +61,15 @@ class Fedora3Ingestor
       @logger.info "Adding #{i+1} of #{order.length} - #{document.filename}"
       image_data = build_document document_list, document, i+1
       add_datastreams_to_document document, image_data
+    end
+  end
+
+  def add_audio(audio_list)
+    order = @job.metadata.audio.list
+    order.each_with_index do |audio, i|
+      @logger.info "Adding #{i+1} of #{order.length} - #{audio.filename}"
+      audio_data = build_audio audio_list, audio, i+1
+      add_datastreams_to_audio audio, audio_data
     end
   end
 
@@ -116,6 +135,38 @@ class Fedora3Ingestor
     document_list.list_collection_ingest
 
     document_list
+  end
+
+  def build_audio(audio_list, audio, number)
+    audio_data = Fedora3Object.from_next_pid
+    audio_data.logger = @logger
+    audio_data.parent_pid = audio_list.pid
+    audio_data.model_type = 'AudioData'
+    audio_data.title = audio.filename
+    @logger.info "Creating Audio Object #{audio_data.pid}"
+
+    audio_data.core_ingest('I')
+    audio_data.data_ingest
+    audio_data.audio_data_ingest
+
+    audio_data.add_sequence_relationship audio_list.pid, number
+
+    audio_data
+  end
+
+  def build_audio_list(resource)
+    audio_list = Fedora3Object.from_next_pid
+    audio_list.logger = @logger
+    audio_list.parent_pid = resource.pid
+    audio_list.model_type = "ListCollection"
+    audio_list.title = "Audio List"
+    @logger.info "Creating Audio List Object #{resource.pid}"
+
+    audio_list.core_ingest("I")
+    audio_list.collection_ingest
+    audio_list.list_collection_ingest
+
+    audio_list
   end
 
   def build_resource(holding_area)
@@ -219,6 +270,11 @@ class Fedora3Ingestor
     if (@job.metadata.documents.list.length > 0 || @category.supports_pdf_generation)
       document_list = build_document_list(resource)
       add_documents document_list
+    end
+
+    if (@job.metadata.audio.list.length > 0)
+      audio_list = build_audio_list(resource)
+      add_audio audio_list
     end
 
     finalize_title resource

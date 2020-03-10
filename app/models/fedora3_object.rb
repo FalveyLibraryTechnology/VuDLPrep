@@ -272,6 +272,10 @@ class Fedora3Object < BaseHttpObject
     add_model_relationship 'PDFData'
   end
 
+  def audio_data_ingest
+    add_model_relationship 'AudioData'
+  end
+
   def ingest(label, format, encoding, namespace, owner_id, log_message, ignore_mime, xml = nil)
     params = {
       label: label,
