@@ -14,6 +14,12 @@ defaults: &defaults
   # Settings for ocrmypdf (omit setting to skip this step if you aren't using it)
   #ocrmypdf_path: /usr/local/bin/ocrmypdf
 
+  #VuFind Base URL
+  vufind_base_url: https://myserver
+
+  #VuFind Test URL
+  vufind_test_url: http://myserver/test
+
   # Settings for FFmpeg
   #ffmpeg_path: /usr/bin/ffmpeg
 

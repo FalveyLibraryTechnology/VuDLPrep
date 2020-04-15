@@ -27,7 +27,7 @@ class Fedora3Ingestor
   end
 
   def add_datastreams_to_document(document, document_data)
-    document_data.add_datastream_from_file "#{@job.dir}/#{document.filename}", 'MASTER', 'application/pdf'
+    document_data.add_datastream_from_file "#{@job.dir}/#{document}", 'MASTER', 'application/pdf'
     document_data.add_master_metadata_datastream
   end
 
