@@ -6,14 +6,29 @@ class PdfGenerator
     @queue = :ingests
 
     def self.perform(pid)
-      manifest_url = self.config['vufind_test_url'].to_s + "/Item/" + pid + "/Manifest"
+      manifest_url = self.config['vufind_url'].to_s + "/Item/" + pid + "/Manifest"
       json = self.do_get manifest_url
       parsed_json = JSON.parse json
-      large_jpegs = parsed_json["sequences"][0]["canvases"].map do |current|
-        current["images"][0]["resource"]["@id"]
+      if (self.has_pdf_already parsed_json)
+        return
+      else
+        large_jpegs = parsed_json["sequences"][0]["canvases"].map do |current|
+          current["images"][0]["resource"]["@id"]
+        end
+        pdf = self.generate_pdf(large_jpegs)
+        self.add_pdf_to_pid(pdf,pid)
       end
-      pdf = self.generate_pdf(large_jpegs)
-      self.add_pdf_to_pid(pdf,pid)
+    end
+
+    def self.has_pdf_already(parsed_json)
+      rendering_format = parsed_json["sequences"][0]["canvases"][0]["rendering"].map do |current|
+        current["format"]
+      end
+      if (rendering_format == "application/pdf")
+        return true
+      else
+        return false
+      end
     end
 
     def self.add_pdf_to_pid(pdf,pid)
