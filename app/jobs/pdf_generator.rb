@@ -17,18 +17,18 @@ class PdfGenerator
         end
         pdf = self.generate_pdf(large_jpegs)
         self.add_pdf_to_pid(pdf,pid)
+        File.delete(pdf)
       end
     end
 
     def self.has_pdf_already(parsed_json)
-      rendering_format = parsed_json["sequences"][0]["canvases"][0]["rendering"].map do |current|
-        current["format"]
-      end
-      if (rendering_format == "application/pdf")
-        return true
-      else
+      unless (parsed_json["sequences"][0]["rendering"])
         return false
       end
+      rendering_format = parsed_json["sequences"][0]["rendering"].map do |current|
+        current["format"]
+      end
+      rendering_format.include? "application/pdf"
     end
 
     def self.add_pdf_to_pid(pdf,pid)
