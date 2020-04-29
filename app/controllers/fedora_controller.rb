@@ -6,6 +6,11 @@ class FedoraController < ApplicationController
     render json: { status: 'ok' }
   end
 
+  def pdf
+    Resque.enqueue(PdfGenerator, params[:id])
+    render json: { status: 'ok' }
+  end
+
   def regeneratemaster
     Resque.enqueue(MasterRegenerator, params[:id])
     render json: { status: 'ok' }
