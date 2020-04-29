@@ -9,9 +9,7 @@ class PdfGenerator
       manifest_url = self.config['vufind_url'].to_s + "/Item/" + pid + "/Manifest"
       json = self.do_get manifest_url
       parsed_json = JSON.parse json
-      if (self.has_pdf_already parsed_json)
-        return
-      else
+      unless (self.has_pdf_already parsed_json)
         large_jpegs = parsed_json["sequences"][0]["canvases"].map do |current|
           current["images"][0]["resource"]["@id"]
         end
