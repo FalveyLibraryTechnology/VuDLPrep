@@ -35,7 +35,7 @@ class PdfGenerator
       document_list.parent_pid = resource.pid
       document_list.model_type = "ListCollection"
       document_list.title = "Document List"
-      document_list.core_ingest("I")
+      document_list.core_ingest("A")
       document_list.collection_ingest
       document_list.list_collection_ingest
       image_data = self.build_document document_list, pdf, 1
@@ -48,7 +48,7 @@ class PdfGenerator
       document_data.parent_pid = document_list.pid
       document_data.model_type = 'PDFData'
       document_data.title = "PDF"
-      document_data.core_ingest('I')
+      document_data.core_ingest('A')
       document_data.data_ingest
       document_data.document_data_ingest
       document_data.add_sequence_relationship document_list.pid, number
