@@ -84,10 +84,9 @@ class PdfGenerator
     end
 
     def self.generate_pdf(jpegurls)
-      dir = '/tmp/'
+      dir = self.config['pdf_directory']
       jpgs = jpegurls.map do |url|
-        filename = "/tmp/#{SecureRandom.urlsafe_base64}.JPEG"
-        #puts url
+        filename = dir + "#{SecureRandom.urlsafe_base64}.JPEG"
         image = self.do_get(url)
         File.open(filename, "w:ASCII-8BIT") do |f|
           f.write image.to_s
@@ -95,12 +94,16 @@ class PdfGenerator
         filename
       end
       image_list = Magick::ImageList.new(*jpgs)
-      filename = "/tmp/#{SecureRandom.urlsafe_base64}.pdf"
+      filename = dir + "#{SecureRandom.urlsafe_base64}.pdf"
 
       begin
         image_list.write(filename)
       rescue 
         system "convert #{jpgs.join ' '} #{filename}"
+      end
+
+      jpgs.each do |file|
+        File.delete(file)
       end
       
       ocrmypdf = self.config['ocrmypdf_path'] 
