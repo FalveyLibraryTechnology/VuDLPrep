@@ -17,7 +17,7 @@ defaults: &defaults
   # VuFind Base URL
   vufind_url: https://myserver
 
-  #PDF Directory
+  # Temp directory used for PDF generation
   pdf_directory: /tmp/
 
   # Settings for FFmpeg
