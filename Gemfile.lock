@@ -84,7 +84,7 @@ GEM
     minitest (5.11.3)
     mono_logger (1.1.0)
     multi_json (1.13.1)
-    nokogiri (1.13.6)
+    nokogiri (1.13.9)
       mini_portile2 (~> 2.8.0)
       racc (~> 1.4)
     omniauth (1.9.2)
