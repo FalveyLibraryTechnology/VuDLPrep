@@ -3,6 +3,9 @@
 This project provides an interface (driven by a JSON API) for managing review and
 pagination of jobs prior to their import into VuDL.
 
+== IMPORTANT: DEPRECATION NOTICE
+
+This project has been superseded by a newer version; see https://github.com/FalveyLibraryTechnology/VuDLPrepJS
 
 == Workflow / Assumptions
 
